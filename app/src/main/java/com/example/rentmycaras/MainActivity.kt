@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import com.example.rentmycaras.screens.LoginScreen
-//import com.example.rentmycaras.screens.HomeScreen
+import com.example.rentmycaras.screens.HomeScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 
 class MainActivity : ComponentActivity() {
