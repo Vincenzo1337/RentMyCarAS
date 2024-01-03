@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,10 +28,10 @@ private val String.text: TextFieldValue
 
 @Composable
 fun ProfileScreen() {
-    var name by remember { mutableStateOf(TextFieldValue("John Doe")) }
-    var phone by remember { mutableStateOf(TextFieldValue("+123456789")) }
-    var email by remember { mutableStateOf(TextFieldValue("john.doe@example.com")) }
-    var password by remember { mutableStateOf(TextFieldValue("")) }
+    var name by remember { mutableStateOf(TextFieldValue()) }
+    var phone by remember { mutableStateOf(TextFieldValue()) }
+    var email by remember { mutableStateOf(TextFieldValue()) }
+    var password by remember { mutableStateOf(TextFieldValue()) }
 
     LocalContext.current
 
@@ -40,12 +41,14 @@ fun ProfileScreen() {
             .padding(16.dp)
     ) {
         Text(
-            text = "Profiel",
+            text = "Profile",
             style = TextStyle(
-                fontSize = 30.sp, // Pas de grootte naar wens aan
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             ),
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .align(Alignment.CenterHorizontally)
         )
 
         TextField(
@@ -53,7 +56,7 @@ fun ProfileScreen() {
             onValueChange = {
                 name = it.text
             },
-            label = { Text("Naam") },
+            label = { Text("Name") },
             leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -65,7 +68,7 @@ fun ProfileScreen() {
             onValueChange = {
                 phone = it.text
             },
-            label = { Text("Telefoonnummer") },
+            label = { Text("Phonenumber") },
             leadingIcon = { Icon(imageVector = Icons.Default.Phone, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,7 +80,7 @@ fun ProfileScreen() {
             onValueChange = {
                 email = it.text
             },
-            label = { Text("E-mailadres") },
+            label = { Text("E-mail") },
             leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -89,7 +92,7 @@ fun ProfileScreen() {
             onValueChange = {
                 password = it.text
             },
-            label = { Text("Wachtwoord") },
+            label = { Text("Password") },
             leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -100,14 +103,34 @@ fun ProfileScreen() {
 
         Button(
             onClick = {
-                // Voeg hier code toe om het profiel bij te werken
-                // Je kunt gebruik maken van de ingevoerde gegevens: name, phone, email, password
+                updateProfile(name.text.text.toString(),
+                    phone.text.text.toString(),
+                    email.text.text.toString(),
+                    password.text.text.toString()
+                )
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
         ) {
-            Text("Profiel Bijwerken")
+            Text("Update Profile")
         }
+
     }
+}
+
+data class UserProfile(
+    var name: String,
+    var phone: String,
+    var email: String,
+    var password: String
+)
+
+private var userProfile by mutableStateOf(UserProfile("", "", "", ""))
+
+private fun updateProfile(name: String, phone: String, email: String, password: String) {
+    userProfile = UserProfile(name, phone, email, password)
+    println("Updated profile: $userProfile")
 }
 
 @Preview(showBackground = true)
