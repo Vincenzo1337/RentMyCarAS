@@ -11,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -20,20 +19,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
+import com.example.rentmycaras.viewmodels.ProfileViewModel
 
 private val String.text: TextFieldValue
     get() = TextFieldValue(this)
 
-
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
+
     var name by remember { mutableStateOf(TextFieldValue()) }
     var phone by remember { mutableStateOf(TextFieldValue()) }
     var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
-
-    LocalContext.current
 
     Column(
         modifier = Modifier
@@ -103,7 +102,7 @@ fun ProfileScreen() {
 
         Button(
             onClick = {
-                updateProfile(name.text.text.toString(),
+                profileViewModel.updateProfile(name.text.text.toString(),
                     phone.text.text.toString(),
                     email.text.text.toString(),
                     password.text.text.toString()
@@ -125,13 +124,6 @@ data class UserProfile(
     var email: String,
     var password: String
 )
-
-private var userProfile by mutableStateOf(UserProfile("", "", "", ""))
-
-private fun updateProfile(name: String, phone: String, email: String, password: String) {
-    userProfile = UserProfile(name, phone, email, password)
-    println("Updated profile: $userProfile")
-}
 
 @Preview(showBackground = true)
 @Composable
