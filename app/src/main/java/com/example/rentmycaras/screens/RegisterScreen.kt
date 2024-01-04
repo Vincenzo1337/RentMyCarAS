@@ -1,16 +1,19 @@
 package com.example.rentmycaras.screens
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -19,20 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
-import com.example.rentmycaras.viewmodels.ProfileViewModel
-
-val String.text: TextFieldValue
-    get() = TextFieldValue(this)
+import com.example.rentmycaras.viewmodels.RegisterViewModel
 
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
+fun RegisterScreen(registerViewModel: RegisterViewModel = viewModel()) {
 
     var name by remember { mutableStateOf(TextFieldValue()) }
     var phone by remember { mutableStateOf(TextFieldValue()) }
     var email by remember { mutableStateOf(TextFieldValue()) }
-    var password by remember { mutableStateOf(TextFieldValue()) }
+    var passwordValue by remember { mutableStateOf(TextFieldValue()) }
+    var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
 
     Column(
         modifier = Modifier
@@ -40,7 +40,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
             .padding(16.dp)
     ) {
         Text(
-            text = "Profile",
+            text = "Register",
             style = TextStyle(
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -87,48 +87,66 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
         )
 
         TextField(
-            value = password.text,
+            value = passwordValue.text,
             onValueChange = {
-                password = it.text
+                passwordValue = it.text
             },
             label = { Text("Password") },
             leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+        )
+
+        TextField(
+            value = confirmPassword.text,
+            onValueChange = {
+                confirmPassword = it.text
+            },
+            label = { Text("Confirm Password") },
+            leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                profileViewModel.updateProfile(name.text.text.toString(),
-                    phone.text.text.toString(),
-                    email.text.text.toString(),
-                    password.text.text.toString()
-                )
+                if (passwordValue.text == confirmPassword.text) {
+                    registerViewModel.register(
+                        name = name.text,
+                        phone = phone.text,
+                        email = email.text,
+                        password = passwordValue.text
+                    )
+                } else {
+                    // Toon een foutmelding dat wachtwoorden niet overeenkomen
+                    // Je kunt ook een andere manier kiezen om gebruikers te informeren over onjuiste wachtwoorden
+                    // bijv. een toast of een foutmelding in de UI.
+                    println("Passwords do not match.")
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            Text("Update Profile")
+            Text("Register")
         }
+
 
     }
 }
 
-data class UserProfile(
-    var name: String,
-    var phone: String,
-    var email: String,
-    var password: String
-)
-
-@Preview(showBackground = true)
 @Composable
-fun ProfileScreenPreview() {
+fun RegisterScreenPreview() {
     RentMyCarASTheme {
-        ProfileScreen()
+        RegisterScreen()
     }
 }

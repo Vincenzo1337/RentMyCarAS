@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import com.example.rentmycaras.screens.LoginScreen
 import com.example.rentmycaras.screens.HomeScreen
 import com.example.rentmycaras.screens.ProfileScreen
+import com.example.rentmycaras.screens.RegisterScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 
 class MainActivity : ComponentActivity() {
