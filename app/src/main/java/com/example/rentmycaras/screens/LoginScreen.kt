@@ -15,10 +15,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
+import com.example.rentmycaras.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(loginViewModel: LoginViewModel = viewModel()){
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(false) }
@@ -79,7 +81,8 @@ fun LoginScreen() {
 
         Button(
             onClick = {
-                // Handle login action here
+                // Roep de login-functie aan van de LoginViewModel
+                loginViewModel.login(username, password)
             },
             enabled = isButtonEnabled,
             modifier = Modifier
