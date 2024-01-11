@@ -1,5 +1,6 @@
 package com.example.rentmycaras.viewmodels
 
+import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -9,23 +10,31 @@ class LoginViewModel : ViewModel() {
 
     private val _loginStatus = mutableStateOf(false)
     private val _errorMessage = mutableStateOf<String?>(null)
+    private val _isLoading = mutableStateOf(false)
+
+    val isLoading: State<Boolean> = _isLoading
 
     fun login(username: String, password: String) {
         if (username.isNotEmpty() && password.isNotEmpty()) {
+            _isLoading.value = true
             viewModelScope.launch {
-                // Simuleer een vertraging van 1 seconde (bijvoorbeeld voor netwerkbewerkingen)
-                kotlinx.coroutines.delay(1000)
-
-                // Voer hier verdere acties uit, bijvoorbeeld het instellen van de inlogstatus
-                _loginStatus.value = true
-
-                // Print een bericht om aan te geven dat de inlogpoging is geslaagd
-                println("Login successful for: $username")
+                try {
+                    kotlinx.coroutines.delay(1000)
+                    _loginStatus.value = true
+                    println("Login successful for: $username")
+                } catch (e: Exception) {
+                    setErrorMessage("Login failed. Please check your credentials.")
+                } finally {
+                    _isLoading.value = false
+                }
             }
         } else {
-            // Gebruikersnaam of wachtwoord is leeg, stel een foutmelding in
-            _errorMessage.value = "Please enter both username and password."
+            setErrorMessage("Please enter both username and password.")
         }
+    }
+
+    fun setErrorMessage(message: String) {
+        _errorMessage.value = message
     }
 
     fun getLoginStatus() = _loginStatus.value
@@ -36,3 +45,4 @@ class LoginViewModel : ViewModel() {
         return errorMessage
     }
 }
+
