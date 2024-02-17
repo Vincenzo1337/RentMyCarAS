@@ -16,10 +16,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RentMyCarASTheme {
-                RegisterScreen()
+//                RegisterScreen()
+                HomeScreen()
             }
         }
     }
 }
-
-
