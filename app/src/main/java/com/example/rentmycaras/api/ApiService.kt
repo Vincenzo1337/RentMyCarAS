@@ -10,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-private const val BASE_URL: String = "http://127.0.0.1:8080"
+private const val BASE_URL: String = "http://192.168.2.4:8080"
 private val contentType = "application/json".toMediaType()
 
 private val retrofit = Retrofit.Builder()

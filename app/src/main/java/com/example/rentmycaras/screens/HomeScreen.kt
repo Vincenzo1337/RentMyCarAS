@@ -60,7 +60,7 @@ fun HomeScreen() {
             })
 
         OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-            value = "http://127.0.0.1:8080",
+            value = "Typ hier...",
             onValueChange = {},
             readOnly = true,
             singleLine = true,
