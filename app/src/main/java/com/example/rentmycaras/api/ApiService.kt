@@ -1,5 +1,6 @@
 package com.example.rentmycaras.api
 
+import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.models.User
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -10,7 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
-private const val BASE_URL: String = "http://192.168.2.4:8080"
+private const val BASE_URL: String = "http://192.168.2.9:8080"
 private val contentType = "application/json".toMediaType()
 
 private val retrofit = Retrofit.Builder()
@@ -24,6 +25,9 @@ interface CarApiService {
 
     @GET("/user/{id}")
     suspend fun getUserById(@Path("id") id: Int): List<User>
+
+    @GET("/cars")
+    suspend fun getAllCars(): List<Car>
 
 //    @POST("/add/user")
 //    suspend fun createNewUser(@Body todo: User): User

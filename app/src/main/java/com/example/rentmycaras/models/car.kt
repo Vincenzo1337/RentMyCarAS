@@ -2,14 +2,15 @@ package com.example.rentmycaras.models
 
 import kotlinx.serialization.Serializable
 
+// todo: wanneer bijv owner is null, laat dan niet zien
 @Serializable
 data class Car(
     val brand: String,
     val type: String,
     val category: CarCategory,
-    val availability: List<TimeBlock>,
-//    val rentalConditions: RentalConditions,
-    val owner: User,
+    val availability: Boolean,
+    val timeBlock: List<TimeBlock> = emptyList(),
+    val owner: User = User(),
 //    val photos: List<String>
 )
 
@@ -18,11 +19,6 @@ enum class CarCategory {
     BEV,
     FCEV
 }
-
-data class RentalConditions(
-    val price: Double,
-    val pickupDropOff: String
-)
 
 @Serializable
 data class TimeBlock(

@@ -42,12 +42,12 @@ import kotlinx.serialization.encoding.Encoder
 
 @Serializable
 data class User(
-    val name: String,
-    val email: String,
+    val name: String? = null,
+    val email: String? = null,
     val password: String? = null,
-    val role: Role,
-    val id:  Int,
-    val drivingBehavior: DrivingBehavior,
+    val role: Role? = null,
+    val id:  Int? = null,
+    val drivingBehavior: DrivingBehavior? = null,
 )
 
 enum class Role {

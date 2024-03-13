@@ -83,7 +83,7 @@ fun HomeScreen() {
                 scope.launch {
                     when (headLine) {
                         "/GET" -> {
-                            jsonResponse = apiCar.getAllUsers().toString()
+                            jsonResponse = apiCar.getAllCars().toString()
                         }
 
 //                        "/GET/1" -> {
