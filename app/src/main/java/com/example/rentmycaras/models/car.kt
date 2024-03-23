@@ -9,8 +9,9 @@ data class Car(
     val type: String,
     val category: CarCategory,
     val availability: Boolean,
-    val timeBlock: List<TimeBlock> = emptyList(),
-    val owner: User = User(),
+    val timeBlock: List<TimeBlock>,
+    val ownerId: Int,
+    val owner: User
 //    val photos: List<String>
 )
 
