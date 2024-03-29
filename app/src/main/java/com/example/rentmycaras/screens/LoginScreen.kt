@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +27,8 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
     var password by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(false) }
 
-    val isLoading by loginViewModel.isLoading
+    val isLoading by loginViewModel.isLoading.observeAsState(initial = false)
+    val errorMessage by loginViewModel.errorMessage.observeAsState(initial = null)
 
     Column(
         modifier = Modifier
@@ -80,7 +82,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
                 .padding(8.dp)
         )
 
-        if (isLoading) {
+        if (isLoading == true) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(50.dp)
@@ -89,9 +91,6 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
             )
         }
 
-
-
-        val errorMessage = remember { loginViewModel.getErrorMessage() }
         errorMessage?.let {
             Snackbar(
                 modifier = Modifier.padding(8.dp),
@@ -103,7 +102,6 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
             }
         }
 
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
@@ -111,11 +109,11 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
                 if (username.isNotBlank() && password.isNotBlank()) {
                     loginViewModel.login(username, password)
                 } else {
-                    // Toon een foutmelding of neem een andere actie
+                    // Toon een foutmelding of neem een andere actiex
                     loginViewModel.setErrorMessage("Please enter both username and password.")
                 }
             },
-            enabled = isButtonEnabled && !isLoading,
+            enabled = isButtonEnabled && isLoading != true,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -124,9 +122,6 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
         }
     }
 }
-
-
-
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {

@@ -17,7 +17,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             RentMyCarASTheme {
 //                RegisterScreen()
-                HomeScreen()
+//                HomeScreen()
+                LoginScreen()
             }
         }
     }

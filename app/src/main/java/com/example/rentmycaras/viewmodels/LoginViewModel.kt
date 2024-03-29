@@ -1,48 +1,47 @@
 package com.example.rentmycaras.viewmodels
 
-import androidx.compose.runtime.State
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import com.example.rentmycaras.api.CarApi
+import com.example.rentmycaras.models.Account
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class LoginViewModel : ViewModel() {
+    private var _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _loginStatus = mutableStateOf(false)
-    private val _errorMessage = mutableStateOf<String?>(null)
-    private val _isLoading = mutableStateOf(false)
+    private var _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
 
-    val isLoading: State<Boolean> = _isLoading
+    private var _loginSuccess = MutableLiveData<Boolean>()
+    val loginSuccess: LiveData<Boolean> = _loginSuccess
 
     fun login(username: String, password: String) {
-        if (username.isNotEmpty() && password.isNotEmpty()) {
+        viewModelScope.launch {
             _isLoading.value = true
-            viewModelScope.launch {
-                try {
-                    kotlinx.coroutines.delay(1000)
-                    _loginStatus.value = true
-                    println("Login successful for: $username")
-                } catch (e: Exception) {
-                    setErrorMessage("Login failed. Please check your credentials.")
-                } finally {
-                    _isLoading.value = false
+            _errorMessage.value = null
+            try {
+                val response = CarApi.carApiService.login(Account(username, password, 0))
+                if (response.isSuccessful) {
+                    // Inloggen was succesvol, ga naar het volgende scherm
+                    _loginSuccess.value = true
+                } else {
+                    // Inloggen is mislukt, toon een foutmelding
+                    _errorMessage.value = "Inloggen mislukt"
                 }
+            } catch (e: Exception) {
+                // Er is een netwerkfout opgetreden, toon een foutmelding
+                _errorMessage.value = "Er is een netwerkfout opgetreden"
+            } finally {
+                _isLoading.value = false
             }
-        } else {
-            setErrorMessage("Please enter both username and password.")
         }
     }
 
     fun setErrorMessage(message: String) {
         _errorMessage.value = message
     }
-
-    fun getLoginStatus() = _loginStatus.value
-
-    fun getErrorMessage(): String? {
-        val errorMessage = _errorMessage.value
-        _errorMessage.value = null // Reset de foutmelding nadat deze is opgehaald
-        return errorMessage
-    }
 }
-

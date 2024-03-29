@@ -1,10 +1,12 @@
 package com.example.rentmycaras.api
 
+import com.example.rentmycaras.models.Account
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.models.User
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,6 +32,9 @@ interface CarApiService {
     // /cars?search=BMW
     @GET("/cars")
     suspend fun getAllCars(@Query("search") search: String? = null): List<Car>
+
+    @POST("/login")
+    suspend fun login(@Body account: Account): Response<Unit>
 }
 
 object CarApi {
