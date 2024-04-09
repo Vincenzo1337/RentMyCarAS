@@ -18,11 +18,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 import com.example.rentmycaras.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isButtonEnabled by remember { mutableStateOf(false) }
@@ -74,7 +76,11 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-
+                    if (username.isNotBlank() && password.isNotBlank()) {
+                        loginViewModel.login(username, password)
+                    } else {
+                        loginViewModel.setErrorMessage("Please enter both username and password.")
+                    }
                 }
             ),
             modifier = Modifier
@@ -82,7 +88,7 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
                 .padding(8.dp)
         )
 
-        if (isLoading == true) {
+        if (isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(50.dp)
@@ -109,23 +115,29 @@ fun LoginScreen(loginViewModel: LoginViewModel = viewModel()) {
                 if (username.isNotBlank() && password.isNotBlank()) {
                     loginViewModel.login(username, password)
                 } else {
-                    // Toon een foutmelding of neem een andere actiex
                     loginViewModel.setErrorMessage("Please enter both username and password.")
                 }
             },
-            enabled = isButtonEnabled && isLoading != true,
+            enabled = isButtonEnabled && !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
             Text("Login")
         }
+
+        // Navigeer naar de homepagina nadat het inloggen succesvol is geweest
+        val isLoggedIn = loginViewModel.loginSuccess.value
+        if (isLoggedIn == true) {
+            navController.navigate("home")
+        }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     RentMyCarASTheme {
-        LoginScreen()
+        LoginScreen(navController = rememberNavController())
     }
 }

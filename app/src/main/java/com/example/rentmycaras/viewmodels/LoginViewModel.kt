@@ -26,8 +26,9 @@ class LoginViewModel : ViewModel() {
             try {
                 val response = CarApi.carApiService.login(Account(username, password, 0))
                 if (response.isSuccessful) {
-                    // Inloggen was succesvol, ga naar het volgende scherm
+                    // Inloggen was succesvol, stel loginSuccess in op true
                     _loginSuccess.value = true
+
                 } else {
                     // Inloggen is mislukt, toon een foutmelding
                     _errorMessage.value = "Inloggen mislukt"
