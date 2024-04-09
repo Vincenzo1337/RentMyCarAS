@@ -54,7 +54,8 @@ fun HomeScreen() {
 
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
-        "VW" to R.drawable.golf_r
+        "Volkswagen" to R.drawable.golf_r,
+        "Volvo" to R.drawable.volvo_v60
     )
 
     fun getCarImage(brand: String): Int {
