@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.rentmycaras.screens.CarDetailScreen
 import com.example.rentmycaras.screens.HomeScreen
 import com.example.rentmycaras.screens.LoginScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
@@ -31,6 +32,7 @@ fun AppNavigation() {
     val navController = rememberNavController()
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController) }
-        composable("home") { HomeScreen() }
+        composable("home") { HomeScreen(navController) }
+        composable("carDetails/{carId}") { CarDetailScreen() }
     }
 }

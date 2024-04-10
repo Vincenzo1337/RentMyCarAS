@@ -3,6 +3,7 @@ package com.example.rentmycaras.screens
 import android.widget.GridLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -38,9 +39,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.bundleOf
+import androidx.navigation.NavController
 import com.example.rentmycaras.R
 import com.example.rentmycaras.ui_components.CodeCard
 import com.example.rentmycaras.ui_components.FilterChipGroup
@@ -50,7 +54,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
 
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
@@ -169,6 +173,13 @@ fun HomeScreen() {
                         .padding(4.dp)
                         .fillMaxWidth()
                         .background(Color.LightGray)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    navController.navigate("carDetails/${car.id}" )
+                                }
+                            )
+                        }
                 ) {
 
                         Image(

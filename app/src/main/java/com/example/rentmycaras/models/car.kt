@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 // todo: wanneer bijv owner is null, laat dan niet zien
 @Serializable
 data class Car(
+    val id: Int,
     val brand: String,
     val type: String,
     val category: CarCategory,

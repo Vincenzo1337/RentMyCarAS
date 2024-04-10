@@ -33,6 +33,9 @@ interface CarApiService {
     @GET("/cars")
     suspend fun getAllCars(@Query("search") search: String? = null): List<Car>
 
+    @GET("/car/{id}")
+    suspend fun getCarById(@Path("id") id: String): Response<Car>
+
     @POST("/login")
     suspend fun login(@Body account: Account): Response<Unit>
 }
