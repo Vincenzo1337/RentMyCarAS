@@ -1,6 +1,5 @@
 package com.example.rentmycaras.screens
 
-import android.widget.GridLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -43,13 +42,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import com.example.rentmycaras.R
-import com.example.rentmycaras.ui_components.CodeCard
-import com.example.rentmycaras.ui_components.FilterChipGroup
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
+import com.example.rentmycaras.ui_components.FilterChipGroup
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +65,7 @@ fun HomeScreen(navController: NavController) {
 
     Column(modifier = Modifier.padding(all = 12.dp)) {
 
-        val chipsList = listOf("/GET")
+        val chipsList = listOf("Home") // Verander "/GET" naar "Home"
         var headLine by remember { mutableStateOf(chipsList[0]) }
         val scope = rememberCoroutineScope()
 
@@ -88,7 +85,7 @@ fun HomeScreen(navController: NavController) {
             showLoading = true
             scope.launch {
                 when (headLine) {
-                    "/GET" -> {
+                    "Home" -> {
                         val carsResponse = apiCar.getAllCars(searchInput)
                         cars.clear()
                         cars.addAll(carsResponse)
@@ -139,7 +136,7 @@ fun HomeScreen(navController: NavController) {
                 showLoading = true
                 scope.launch {
                     when (headLine) {
-                        "/GET" -> {
+                        "Home" -> {
                             val carsResponse = apiCar.getAllCars(searchInput)
                             cars.clear()
                             cars.addAll(carsResponse)
