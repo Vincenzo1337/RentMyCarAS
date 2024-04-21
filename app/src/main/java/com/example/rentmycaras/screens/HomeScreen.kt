@@ -65,7 +65,7 @@ fun HomeScreen(navController: NavController) {
 
     Column(modifier = Modifier.padding(all = 12.dp)) {
 
-        val chipsList = listOf("Home") // Verander "/GET" naar "Home"
+        val chipsList = listOf("Home")
         var headLine by remember { mutableStateOf(chipsList[0]) }
         val scope = rememberCoroutineScope()
 
@@ -113,7 +113,7 @@ fun HomeScreen(navController: NavController) {
 
         OutlinedTextField(modifier = Modifier.fillMaxWidth(),
             value = searchInput ?: "",
-            label = { Text("Typ hier...") },
+            label = { Text("Filter op auto of merk...") },
             onValueChange = { value ->
                 searchInput = value
             },
@@ -129,9 +129,10 @@ fun HomeScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        Button(modifier = Modifier
-            .align(alignment = Alignment.CenterHorizontally)
-            .width(200.dp),
+        Button(
+            modifier = Modifier
+                .align(alignment = Alignment.CenterHorizontally)
+                .width(200.dp),
             onClick = {
                 showLoading = true
                 scope.launch {
@@ -150,12 +151,12 @@ fun HomeScreen(navController: NavController) {
                 }
 
             }) {
-            Text(text = "Send")
+            Text(text = "Filter")
         }
         if (showLoading) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-        LazyVerticalGrid(columns = GridCells.Fixed(3), state = gridState, modifier = Modifier.fillMaxSize(),
+        LazyVerticalGrid(columns = GridCells.Fixed(2), state = gridState, modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(
                 start = 12.dp,
                 top = 16.dp,
@@ -168,6 +169,7 @@ fun HomeScreen(navController: NavController) {
 
                     modifier = Modifier
                         .padding(4.dp)
+                        .padding(vertical = 8.dp)
                         .fillMaxWidth()
                         .background(Color.LightGray)
                         .pointerInput(Unit) {
@@ -184,7 +186,7 @@ fun HomeScreen(navController: NavController) {
                             contentDescription = "",
                             contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .height(60.dp)
+                                .height(120.dp)
                                 .fillMaxWidth()
                         )
                     Text(text = car.brand)
