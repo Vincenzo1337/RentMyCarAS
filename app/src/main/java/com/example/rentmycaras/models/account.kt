@@ -6,5 +6,8 @@ import kotlinx.serialization.Serializable
 data class Account (
     val userName: String,
     val password: String,
-    val userId: Int
+    val userId: Int,
+    val name: String,
+    val phone: String,
+    val email: String
 )

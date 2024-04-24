@@ -145,9 +145,6 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
                         password = passwordValue.text
                     )
                 } else {
-                    // Toon een foutmelding dat wachtwoorden niet overeenkomen
-                    // Je kunt ook een andere manier kiezen om gebruikers te informeren over onjuiste wachtwoorden
-                    // bijv. een toast of een foutmelding in de UI.
                     println("Passwords do not match.")
                 }
             },
