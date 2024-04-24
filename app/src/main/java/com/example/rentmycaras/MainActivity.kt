@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.rentmycaras.screens.CarDetailScreen
 import com.example.rentmycaras.screens.HomeScreen
 import com.example.rentmycaras.screens.LoginScreen
+import com.example.rentmycaras.screens.RegisterScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ fun AppNavigation() {
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController) }
         composable("home") { HomeScreen(navController) }
+        composable("register") { RegisterScreen(navController) }
         composable("carDetails/{carId}") { CarDetailScreen(navController) }
     }
 }
-
