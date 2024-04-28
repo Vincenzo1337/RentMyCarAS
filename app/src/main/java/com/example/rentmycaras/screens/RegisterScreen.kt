@@ -49,6 +49,9 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
     var passwordValue by remember { mutableStateOf(TextFieldValue()) }
     var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
 
+    var showSnackbar by remember { mutableStateOf(false) }
+    var snackbarText by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -144,6 +147,9 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
                         email = email.text,
                         password = passwordValue.text
                     )
+                    if (registerViewModel.getRegistrationStatus()) {
+                        navController.navigate("login")
+                    }
                 } else {
                     println("Wachtwoorden komen niet overeen.")
                 }
@@ -154,7 +160,6 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
         ) {
             Text("Registreer")
         }
-
 
     }
 }

@@ -3,6 +3,8 @@ package com.example.rentmycaras.viewmodels
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rentmycaras.api.CarApi
+import com.example.rentmycaras.models.Account
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
@@ -21,12 +23,21 @@ class RegisterViewModel : ViewModel() {
 
                 // Print een bericht om aan te geven dat de registratie is voltooid
                 println("Registration completed for: $userName, $phone, $email")
+
+                // Roep de register functie van de API aan
+                val response = CarApi.carApiService.register(Account(userName, password, 0, phone, email))
+                if (response.isSuccessful) {
+                    println("Registration successful")
+                } else {
+                    println("Registration failed")
+                }
             }
         } else {
             // Wachtwoord is leeg, stel een foutmelding in
             _errorMessage.value = "Password cannot be empty."
         }
     }
+
 
     fun getRegistrationStatus() = _registrationStatus.value
 

@@ -38,6 +38,9 @@ interface CarApiService {
 
     @POST("/login")
     suspend fun login(@Body account: Account): Response<Unit>
+
+    @POST("/register")
+    suspend fun register(@Body account: Account): Response<Unit>
 }
 
 object CarApi {
