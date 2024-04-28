@@ -1,7 +1,7 @@
 package com.example.rentmycaras.viewmodels
 
-import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
@@ -10,7 +10,7 @@ class RegisterViewModel : ViewModel() {
     private val _registrationStatus = mutableStateOf(false)
     private val _errorMessage = mutableStateOf<String?>(null)
 
-    fun register(name: String, phone: String, email: String, password: String) {
+    fun register(userName: String, phone: String, email: String, password: String) {
         if (password.isNotEmpty()) { // Hier kun je een extra controle toevoegen op het wachtwoord
             viewModelScope.launch {
                 // Simuleer een vertraging van 1 seconde (bijvoorbeeld voor netwerkbewerkingen)
@@ -20,7 +20,7 @@ class RegisterViewModel : ViewModel() {
                 _registrationStatus.value = true
 
                 // Print een bericht om aan te geven dat de registratie is voltooid
-                println("Registration completed for: $name, $phone, $email")
+                println("Registration completed for: $userName, $phone, $email")
             }
         } else {
             // Wachtwoord is leeg, stel een foutmelding in

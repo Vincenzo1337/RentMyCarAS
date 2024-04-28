@@ -139,13 +139,13 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
             onClick = {
                 if (passwordValue.text == confirmPassword.text) {
                     registerViewModel.register(
-                        name = name.text,
+                        userName = name.text,
                         phone = phone.text,
                         email = email.text,
                         password = passwordValue.text
                     )
                 } else {
-                    println("Passwords do not match.")
+                    println("Wachtwoorden komen niet overeen.")
                 }
             },
             modifier = Modifier

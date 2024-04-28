@@ -18,15 +18,18 @@ class LoginViewModel : ViewModel() {
     private var _loginSuccess = MutableLiveData<Boolean>()
     val loginSuccess: LiveData<Boolean> = _loginSuccess
 
+    private var _loggedInUser = MutableLiveData<String?>()
+    val loggedInUser: LiveData<String?> = _loggedInUser
+
     fun login(username: String, password: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val response = CarApi.carApiService.login(Account(username, password, 0, "", "", ""))
+                val response = CarApi.carApiService.login(Account(username, password, 0, "", ""))
                 if (response.isSuccessful) {
                     _loginSuccess.value = true
-
+                    _loggedInUser.value = username
                 } else {
                     _errorMessage.value = "Inloggen mislukt"
                 }
@@ -36,6 +39,10 @@ class LoginViewModel : ViewModel() {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun logout() {
+        _loginSuccess.value = false
     }
 
     fun setErrorMessage(message: String) {

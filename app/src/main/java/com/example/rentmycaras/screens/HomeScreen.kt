@@ -30,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,16 +43,20 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rentmycaras.R
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.ui_components.FilterChipGroup
+import com.example.rentmycaras.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
+
+    val loggedInUser by loginViewModel.loggedInUser.observeAsState()
 
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
@@ -78,6 +83,22 @@ fun HomeScreen(navController: NavController) {
         }
         val gridState = rememberLazyGridState()
 
+        Text(
+            text = "Ingelogd als: ${loggedInUser ?: "Onbekend"}",
+            modifier = Modifier.align(Alignment.End)
+        )
+
+
+        Button(
+            onClick = {
+                loginViewModel.logout()
+                navController.navigate("login")
+            },
+            modifier = Modifier
+                .align(Alignment.End)
+        ) {
+            Text("Uitloggen")
+        }
 
         val apiCar = CarApi.carApiService
 
