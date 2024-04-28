@@ -13,12 +13,15 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,8 +52,11 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
     var passwordValue by remember { mutableStateOf(TextFieldValue()) }
     var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
 
-    var showSnackbar by remember { mutableStateOf(false) }
-    var snackbarText by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogMessage by remember { mutableStateOf("") }
+    var isRegistering by remember { mutableStateOf(false) }
+    val registrationStatus by registerViewModel.registrationStatus.collectAsState()
+    val errorMessage by registerViewModel.errorMessage.collectAsState()
 
     Column(
         modifier = Modifier
@@ -141,17 +147,10 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
         Button(
             onClick = {
                 if (passwordValue.text == confirmPassword.text) {
-                    registerViewModel.register(
-                        userName = name.text,
-                        phone = phone.text,
-                        email = email.text,
-                        password = passwordValue.text
-                    )
-                    if (registerViewModel.getRegistrationStatus()) {
-                        navController.navigate("login")
-                    }
+                    isRegistering = true
                 } else {
-                    println("Wachtwoorden komen niet overeen.")
+                    dialogMessage = "Wachtwoorden komen niet overeen."
+                    showDialog = true
                 }
             },
             modifier = Modifier
@@ -161,6 +160,47 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
             Text("Registreer")
         }
 
+        if (showDialog || errorMessage != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    showDialog = false
+                    registerViewModel.getErrorMessage() // Reset de foutmelding nadat deze is opgehaald
+                },
+                title = { Text("Melding") },
+                text = { Text(errorMessage ?: "") },
+                confirmButton = {
+                    Button(onClick = {
+                        showDialog = false
+                        registerViewModel.getErrorMessage() // Reset de foutmelding nadat deze is opgehaald
+                    }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+        if (registrationStatus) {
+            navController.navigate("login")
+        }
+    }
+
+    LaunchedEffect(isRegistering) {
+        if (isRegistering) {
+            registerViewModel.register(
+                userName = name.text,
+                phone = phone.text,
+                email = email.text,
+                password = passwordValue.text
+            )
+            if (registerViewModel.getRegistrationStatus()) {
+                navController.navigate("login")
+                dialogMessage = "Registratie succesvol!"
+            } else {
+                dialogMessage = "Registratie mislukt. Probeer het opnieuw."
+            }
+            showDialog = true
+            isRegistering = false
+        }
     }
 }
 

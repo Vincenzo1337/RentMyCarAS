@@ -1,16 +1,19 @@
 package com.example.rentmycaras.viewmodels
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Account
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
+    private val _registrationStatus = MutableStateFlow(false)
+    private val _errorMessage = MutableStateFlow<String?>(null)
 
-    private val _registrationStatus = mutableStateOf(false)
-    private val _errorMessage = mutableStateOf<String?>(null)
+    val registrationStatus: StateFlow<Boolean> = _registrationStatus
+    val errorMessage: StateFlow<String?> = _errorMessage
 
     fun register(userName: String, phone: String, email: String, password: String) {
         if (password.isNotEmpty()) { // Hier kun je een extra controle toevoegen op het wachtwoord
@@ -18,26 +21,23 @@ class RegisterViewModel : ViewModel() {
                 // Simuleer een vertraging van 1 seconde (bijvoorbeeld voor netwerkbewerkingen)
                 kotlinx.coroutines.delay(1000)
 
-                // Voer hier verdere acties uit, bijvoorbeeld het instellen van de registratiestatus
-                _registrationStatus.value = true
-
-                // Print een bericht om aan te geven dat de registratie is voltooid
-                println("Registration completed for: $userName, $phone, $email")
-
                 // Roep de register functie van de API aan
                 val response = CarApi.carApiService.register(Account(userName, password, 0, phone, email))
                 if (response.isSuccessful) {
+                    _registrationStatus.value = true
+                    _errorMessage.value = "Registratie succesvol!"
                     println("Registration successful")
                 } else {
+                    _registrationStatus.value = false
+                    _errorMessage.value = "Registratie mislukt. Probeer het opnieuw."
                     println("Registration failed")
                 }
             }
         } else {
             // Wachtwoord is leeg, stel een foutmelding in
-            _errorMessage.value = "Password cannot be empty."
+            _errorMessage.value = "Wachtwoord mag niet leeg zijn."
         }
     }
-
 
     fun getRegistrationStatus() = _registrationStatus.value
 
