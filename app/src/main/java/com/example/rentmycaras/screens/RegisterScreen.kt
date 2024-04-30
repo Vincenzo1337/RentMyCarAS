@@ -41,9 +41,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 import com.example.rentmycaras.viewmodels.RegisterViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun RegisterScreen(navController: NavController, registerViewModel: RegisterViewModel = viewModel()) {
+
 
 
     var name by remember { mutableStateOf(TextFieldValue()) }
@@ -57,6 +62,10 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
     var isRegistering by remember { mutableStateOf(false) }
     val registrationStatus by registerViewModel.registrationStatus.collectAsState()
     val errorMessage by registerViewModel.errorMessage.collectAsState()
+
+    fun isValidPhoneNumber(phone: String): Boolean {
+        return phone.all { it.isDigit() || it == '+' }
+    }
 
     Column(
         modifier = Modifier
@@ -146,10 +155,43 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
         Button(
             onClick = {
-                if (passwordValue.text == confirmPassword.text) {
-                    isRegistering = true
+                if (passwordValue.text == confirmPassword.text && passwordValue.text.length <= 50 &&
+                    name.text.isNotEmpty() && name.text.length <= 20 &&
+                    isValidPhoneNumber(phone.text) && phone.text.length <= 15 &&
+                    email.text.isNotEmpty() && email.text.length <= 30) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val registrationSuccessful = registerViewModel.register(
+                            userName = name.text,
+                            phone = phone.text,
+                            email = email.text,
+                            password = passwordValue.text
+                        )
+                        withContext(Dispatchers.Main) {
+                            if (registrationSuccessful) {
+                                navController.navigate("login")
+                                dialogMessage = "Registratie succesvol!"
+                            } else {
+                                dialogMessage = "Registratie mislukt. Probeer het opnieuw."
+                            }
+                            showDialog = true
+                        }
+                    }
                 } else {
-                    dialogMessage = "Wachtwoorden komen niet overeen."
+                    if (passwordValue.text != confirmPassword.text) {
+                        dialogMessage = "Wachtwoorden komen niet overeen."
+                    } else if (!isValidPhoneNumber(phone.text)) {
+                        dialogMessage = "Telefoonnummer mag alleen cijfers en het + teken bevatten."
+                    } else if (name.text.length > 20) {
+                        dialogMessage = "Gebruikersnaam mag maximaal 20 karakters zijn."
+                    } else if (phone.text.length > 15) {
+                        dialogMessage = "Telefoonnummer mag maximaal 15 karakters zijn."
+                    } else if (passwordValue.text.length > 50) {
+                        dialogMessage = "Wachtwoord mag maximaal 50 karakters zijn."
+                    } else if (email.text.length > 30) {
+                        dialogMessage = "E-mailadres mag maximaal 30 karakters zijn."
+                    } else {
+                        dialogMessage = "Vul alle velden in."
+                    }
                     showDialog = true
                 }
             },
@@ -201,6 +243,19 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
             showDialog = true
             isRegistering = false
         }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Melding") },
+            text = { Text(dialogMessage) },
+            confirmButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 }
 
