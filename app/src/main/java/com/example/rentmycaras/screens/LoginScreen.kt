@@ -155,7 +155,6 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                 .align(Alignment.CenterHorizontally)
         )
 
-        // Navigeer naar de homepagina nadat het inloggen succesvol is geweest
         val isLoggedIn = loginViewModel.loginSuccess.value
         if (isLoggedIn == true) {
             navController.navigate("home")

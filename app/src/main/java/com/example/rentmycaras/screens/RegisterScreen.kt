@@ -50,7 +50,6 @@ import kotlinx.coroutines.withContext
 fun RegisterScreen(navController: NavController, registerViewModel: RegisterViewModel = viewModel()) {
 
 
-
     var name by remember { mutableStateOf(TextFieldValue()) }
     var phone by remember { mutableStateOf(TextFieldValue()) }
     var email by remember { mutableStateOf(TextFieldValue()) }
@@ -65,6 +64,10 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
     fun isValidPhoneNumber(phone: String): Boolean {
         return phone.all { it.isDigit() || it == '+' }
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        return email.contains("@") && email.contains(".")
     }
 
     Column(
@@ -155,10 +158,14 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
 
         Button(
             onClick = {
-                if (passwordValue.text == confirmPassword.text && passwordValue.text.length <= 50 &&
-                    name.text.isNotEmpty() && name.text.length <= 20 &&
-                    isValidPhoneNumber(phone.text) && phone.text.length <= 15 &&
-                    email.text.isNotEmpty() && email.text.length <= 30) {
+                val errorMessage = registerViewModel.validateInput(
+                    passwordValue.text,
+                    confirmPassword.text,
+                    name.text,
+                    phone.text,
+                    email.text
+                )
+                if (errorMessage == null) {
                     CoroutineScope(Dispatchers.IO).launch {
                         val registrationSuccessful = registerViewModel.register(
                             userName = name.text,
@@ -171,27 +178,13 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
                                 navController.navigate("login")
                                 dialogMessage = "Registratie succesvol!"
                             } else {
-                                dialogMessage = "Registratie mislukt. Probeer het opnieuw."
+                                dialogMessage = "Registratie mislukt. Account bestaat al."
                             }
                             showDialog = true
                         }
                     }
                 } else {
-                    if (passwordValue.text != confirmPassword.text) {
-                        dialogMessage = "Wachtwoorden komen niet overeen."
-                    } else if (!isValidPhoneNumber(phone.text)) {
-                        dialogMessage = "Telefoonnummer mag alleen cijfers en het + teken bevatten."
-                    } else if (name.text.length > 20) {
-                        dialogMessage = "Gebruikersnaam mag maximaal 20 karakters zijn."
-                    } else if (phone.text.length > 15) {
-                        dialogMessage = "Telefoonnummer mag maximaal 15 karakters zijn."
-                    } else if (passwordValue.text.length > 50) {
-                        dialogMessage = "Wachtwoord mag maximaal 50 karakters zijn."
-                    } else if (email.text.length > 30) {
-                        dialogMessage = "E-mailadres mag maximaal 30 karakters zijn."
-                    } else {
-                        dialogMessage = "Vul alle velden in."
-                    }
+                    dialogMessage = errorMessage
                     showDialog = true
                 }
             },
@@ -201,29 +194,10 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
         ) {
             Text("Registreer")
         }
-
-        if (showDialog || errorMessage != null) {
-            AlertDialog(
-                onDismissRequest = {
-                    showDialog = false
-                    registerViewModel.getErrorMessage() // Reset de foutmelding nadat deze is opgehaald
-                },
-                title = { Text("Melding") },
-                text = { Text(errorMessage ?: "") },
-                confirmButton = {
-                    Button(onClick = {
-                        showDialog = false
-                        registerViewModel.getErrorMessage() // Reset de foutmelding nadat deze is opgehaald
-                    }) {
-                        Text("OK")
-                    }
-                }
-            )
-        }
-
+/*
         if (registrationStatus) {
             navController.navigate("login")
-        }
+        }*/
     }
 
     LaunchedEffect(isRegistering) {
@@ -234,12 +208,9 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
                 email = email.text,
                 password = passwordValue.text
             )
-            if (registerViewModel.getRegistrationStatus()) {
+/*            if (registerViewModel.getRegistrationStatus()) {
                 navController.navigate("login")
-                dialogMessage = "Registratie succesvol!"
-            } else {
-                dialogMessage = "Registratie mislukt. Probeer het opnieuw."
-            }
+            }*/
             showDialog = true
             isRegistering = false
         }
