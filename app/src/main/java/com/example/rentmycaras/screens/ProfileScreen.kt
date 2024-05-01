@@ -1,35 +1,50 @@
 package com.example.rentmycaras.screens
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
+import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
 
 val String.text: TextFieldValue
     get() = TextFieldValue(this)
 
 @Composable
-fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
-
-    var name by remember { mutableStateOf(TextFieldValue()) }
+fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, profileViewModel: ProfileViewModel) {
+    var username by remember { mutableStateOf(TextFieldValue()) }
     var phone by remember { mutableStateOf(TextFieldValue()) }
     var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
@@ -39,8 +54,12 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        IconButton(onClick = { navController.navigate("home") }) {
+            Icon(Icons.Filled.ArrowBack, contentDescription = "Ga terug naar de home pagina")
+        }
+
         Text(
-            text = "Profile",
+            text = "Profiel",
             style = TextStyle(
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -51,11 +70,11 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
         )
 
         TextField(
-            value = name.text,
+            value = username.text,
             onValueChange = {
-                name = it.text
+                username = it.text
             },
-            label = { Text("Name") },
+            label = { Text("Gebruikersnaam") },
             leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -67,7 +86,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
             onValueChange = {
                 phone = it.text
             },
-            label = { Text("Phonenumber") },
+            label = { Text("Telefoonnummer") },
             leadingIcon = { Icon(imageVector = Icons.Default.Phone, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,7 +110,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
             onValueChange = {
                 password = it.text
             },
-            label = { Text("Password") },
+            label = { Text("Wachtwoord") },
             leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -102,7 +121,7 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
 
         Button(
             onClick = {
-                profileViewModel.updateProfile(name.text.text.toString(),
+                profileViewModel.updateProfile(username.text.text.toString(),
                     phone.text.text.toString(),
                     email.text.text.toString(),
                     password.text.text.toString()
@@ -112,14 +131,15 @@ fun ProfileScreen(profileViewModel: ProfileViewModel = viewModel()) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            Text("Update Profile")
+            Text("Update profiel")
         }
+
 
     }
 }
 
 data class UserProfile(
-    var name: String,
+    var username: String,
     var phone: String,
     var email: String,
     var password: String
@@ -128,7 +148,12 @@ data class UserProfile(
 @Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
+    val navController = rememberNavController()
+    val loginViewModel: LoginViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
+
     RentMyCarASTheme {
-        ProfileScreen()
+        ProfileScreen(navController, loginViewModel, profileViewModel)
     }
 }
+

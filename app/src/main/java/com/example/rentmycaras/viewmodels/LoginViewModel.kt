@@ -22,6 +22,11 @@ class LoginViewModel : ViewModel() {
     val loggedInUser: LiveData<String?> = _loggedInUser
 
     fun login(username: String, password: String) {
+        if (username.isBlank() || password.isBlank()) {
+            _errorMessage.value = "Vul zowel gebruikersnaam als wachtwoord in."
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
@@ -49,3 +54,4 @@ class LoginViewModel : ViewModel() {
         _errorMessage.value = message
     }
 }
+

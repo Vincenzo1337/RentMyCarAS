@@ -2,9 +2,11 @@ package com.example.rentmycaras.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,11 +17,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -57,6 +62,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
 
     val loggedInUser by loginViewModel.loggedInUser.observeAsState()
+    var showMenu by remember { mutableStateOf(false) }
 
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
@@ -83,21 +89,32 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         }
         val gridState = rememberLazyGridState()
 
-        Text(
-            text = "Ingelogd als: ${loggedInUser ?: "Onbekend"}",
-            modifier = Modifier.align(Alignment.End)
-        )
-
-
-        Button(
-            onClick = {
-                loginViewModel.logout()
-                navController.navigate("login")
-            },
+        Row(
             modifier = Modifier
                 .align(Alignment.End)
+                .clickable { showMenu = true }
         ) {
-            Text("Uitloggen")
+            Text(text = "${loggedInUser ?: "Onbekend"}")
+            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(onClick = {
+                    navController.navigate("profile")
+                    showMenu = false
+                }) {
+                    Text("Profiel")
+                }
+                DropdownMenuItem(onClick = {
+                    loginViewModel.logout()
+                    navController.navigate("login")
+                    showMenu = false
+                }) {
+                    Text("Afmelden")
+                }
+            }
         }
 
         val apiCar = CarApi.carApiService

@@ -43,7 +43,6 @@ import com.example.rentmycaras.viewmodels.LoginViewModel
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var isButtonEnabled by remember { mutableStateOf(false) }
 
     val isLoading by loginViewModel.isLoading.observeAsState(initial = false)
     val errorMessage by loginViewModel.errorMessage.observeAsState(initial = null)
@@ -68,10 +67,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
         OutlinedTextField(
             value = username,
-            onValueChange = {
-                username = it
-                isButtonEnabled = it.isNotBlank() && password.isNotBlank()
-            },
+            onValueChange = { username = it },
             label = { Text("Gebruikersnaam") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,10 +76,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
 
         OutlinedTextField(
             value = password,
-            onValueChange = {
-                password = it
-                isButtonEnabled = it.isNotBlank() && username.isNotBlank()
-            },
+            onValueChange = { password = it },
             label = { Text("Wachtwoord") },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
@@ -91,13 +84,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
                 keyboardType = KeyboardType.Password
             ),
             keyboardActions = KeyboardActions(
-                onDone = {
-                    if (username.isNotBlank() && password.isNotBlank()) {
-                        loginViewModel.login(username, password)
-                    } else {
-                        loginViewModel.setErrorMessage("Please enter both username and password.")
-                    }
-                }
+                onDone = { loginViewModel.login(username, password) }
             ),
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,14 +114,8 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = {
-                if (username.isNotBlank() && password.isNotBlank()) {
-                    loginViewModel.login(username, password)
-                } else {
-                    loginViewModel.setErrorMessage("Please enter both username and password.")
-                }
-            },
-            enabled = isButtonEnabled && !isLoading,
+            onClick = { loginViewModel.login(username, password) },
+            enabled = !isLoading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
@@ -161,6 +142,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel = v
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
