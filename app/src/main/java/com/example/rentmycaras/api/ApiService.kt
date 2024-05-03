@@ -41,6 +41,10 @@ interface CarApiService {
 
     @POST("/register")
     suspend fun register(@Body account: Account): Response<Unit>
+
+    @GET("/account/{username}")
+    suspend fun getAccountByUsername(@Path("username") username: String): Response<Account>
+
 }
 
 object CarApi {

@@ -21,6 +21,10 @@ class LoginViewModel : ViewModel() {
     private var _loggedInUser = MutableLiveData<String?>()
     val loggedInUser: LiveData<String?> = _loggedInUser
 
+
+    private var _loggedInEmail = MutableLiveData<String?>()
+    val loggedInEmail: LiveData<String?> = _loggedInEmail
+
     fun login(username: String, password: String) {
         if (username.isBlank() || password.isBlank()) {
             _errorMessage.value = "Vul zowel gebruikersnaam als wachtwoord in."
@@ -35,6 +39,11 @@ class LoginViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     _loginSuccess.value = true
                     _loggedInUser.value = username
+
+                    // Haal de details van de gebruiker op
+                    viewModelScope.launch {
+                        fetchUserDetails(username)
+                    }
                 } else {
                     _errorMessage.value = "Inloggen mislukt"
                 }
@@ -48,6 +57,13 @@ class LoginViewModel : ViewModel() {
 
     fun logout() {
         _loginSuccess.value = false
+    }
+
+    suspend fun fetchUserDetails(username: String) {
+        val response = CarApi.carApiService.getAccountByUsername(username)
+        if (response.isSuccessful) {
+            _loggedInEmail.value = response.body()?.email
+        }
     }
 
     fun setErrorMessage(message: String) {

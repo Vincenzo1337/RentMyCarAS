@@ -44,10 +44,12 @@ val String.text: TextFieldValue
 
 @Composable
 fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, profileViewModel: ProfileViewModel) {
-    var username by remember { mutableStateOf(TextFieldValue()) }
+    val username = loginViewModel.loggedInUser.value ?: ""
+    val email = loginViewModel.loggedInEmail.value ?: "" // Haal het e-mailadres op
+
     var phone by remember { mutableStateOf(TextFieldValue()) }
-    var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
+    var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
 
     Column(
         modifier = Modifier
@@ -70,15 +72,25 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         )
 
         TextField(
-            value = username.text,
-            onValueChange = {
-                username = it.text
-            },
+            value = username,
+            onValueChange = {},
             label = { Text("Gebruikersnaam") },
             leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                .padding(bottom = 16.dp),
+            enabled = false // Maak dit veld alleen-lezen
+        )
+
+        TextField(
+            value = email,
+            onValueChange = {},
+            label = { Text("E-mail") },
+            leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+            enabled = false // Maak dit veld alleen-lezen
         )
 
         TextField(
@@ -94,23 +106,25 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         )
 
         TextField(
-            value = email.text,
+            value = password.text,
             onValueChange = {
-                email = it.text
+                password = it.text
             },
-            label = { Text("E-mail") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = null) },
+            label = { Text("Wachtwoord") },
+            leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         )
 
         TextField(
-            value = password.text,
+            value = confirmPassword.text,
             onValueChange = {
-                password = it.text
+                confirmPassword = it.text
             },
-            label = { Text("Wachtwoord") },
+            label = { Text("Bevestig wachtwoord") },
             leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -121,11 +135,14 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
 
         Button(
             onClick = {
-                profileViewModel.updateProfile(username.text.text.toString(),
-                    phone.text.text.toString(),
-                    email.text.text.toString(),
-                    password.text.text.toString()
-                )
+                if (password.text.text.toString() == confirmPassword.text.text.toString()) {
+                    profileViewModel.updateProfile(
+                        phone.text.text.toString(),
+                        password.text.text.toString()
+                    )
+                } else {
+                    // Toon een foutmelding dat de wachtwoorden niet overeenkomen
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -133,10 +150,9 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         ) {
             Text("Update profiel")
         }
-
-
     }
 }
+
 
 data class UserProfile(
     var username: String,
