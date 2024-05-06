@@ -11,6 +11,7 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -45,6 +46,8 @@ interface CarApiService {
     @GET("/account/{username}")
     suspend fun getAccountByUsername(@Path("username") username: String): Response<Account>
 
+    @PUT("/account/{username}")
+    suspend fun updateAccount(@Path("username") username: String, @Body account: Account): Response<Unit>
 }
 
 object CarApi {

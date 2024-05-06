@@ -29,13 +29,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
 
@@ -137,8 +133,8 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             onClick = {
                 if (password.text.text.toString() == confirmPassword.text.text.toString()) {
                     profileViewModel.updateProfile(
-                        phone.text.text.toString(),
-                        password.text.text.toString()
+                        phone,
+                        password.text
                     )
                 } else {
                     // Toon een foutmelding dat de wachtwoorden niet overeenkomen
@@ -150,26 +146,29 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         ) {
             Text("Update profiel")
         }
+
     }
 }
 
 
-data class UserProfile(
+
+/*data class UserProfile(
     var username: String,
     var phone: String,
     var email: String,
     var password: String
-)
+)*/
 
-@Preview(showBackground = true)
+/*@Preview(showBackground = true)
 @Composable
 fun ProfileScreenPreview() {
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
-    val profileViewModel: ProfileViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
 
     RentMyCarASTheme {
         ProfileScreen(navController, loginViewModel, profileViewModel)
     }
-}
+}*/
+
 

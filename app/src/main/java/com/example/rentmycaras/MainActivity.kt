@@ -16,6 +16,7 @@ import com.example.rentmycaras.screens.RegisterScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
+import com.example.rentmycaras.viewmodels.ProfileViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
 fun ParentComposable() {
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
-    val profileViewModel: ProfileViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
 
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController, loginViewModel) }
@@ -42,3 +43,4 @@ fun ParentComposable() {
         composable("carDetails/{carId}") { CarDetailScreen(navController) }
     }
 }
+

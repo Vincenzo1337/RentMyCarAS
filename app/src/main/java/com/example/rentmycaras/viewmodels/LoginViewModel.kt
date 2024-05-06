@@ -21,9 +21,11 @@ class LoginViewModel : ViewModel() {
     private var _loggedInUser = MutableLiveData<String?>()
     val loggedInUser: LiveData<String?> = _loggedInUser
 
-
     private var _loggedInEmail = MutableLiveData<String?>()
     val loggedInEmail: LiveData<String?> = _loggedInEmail
+
+    private var _loggedInUserId = MutableLiveData<Int>()
+    val loggedInUserId: LiveData<Int> = _loggedInUserId
 
     fun login(username: String, password: String) {
         if (username.isBlank() || password.isBlank()) {
@@ -63,6 +65,7 @@ class LoginViewModel : ViewModel() {
         val response = CarApi.carApiService.getAccountByUsername(username)
         if (response.isSuccessful) {
             _loggedInEmail.value = response.body()?.email
+            _loggedInUserId.value = response.body()?.userId
         }
     }
 
