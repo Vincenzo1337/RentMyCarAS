@@ -128,10 +128,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                         cars.clear()
                         cars.addAll(carsResponse)
                     }
-
-//                        "/GET/1" -> {
-//                            jsonResponse = apiCar.getUserById(1).toString()
-//                        }
                 }
                 showLoading = !showLoading
             }
@@ -180,10 +176,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                             cars.clear()
                             cars.addAll(carsResponse)
                         }
-
-//                        "/GET/1" -> {
-//                            jsonResponse = apiCar.getUserById(1).toString()
-//                        }
                     }
                     showLoading = !showLoading
                 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
@@ -18,6 +19,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +37,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 
 val String.text: TextFieldValue
     get() = TextFieldValue(this)
@@ -42,10 +49,17 @@ val String.text: TextFieldValue
 fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, profileViewModel: ProfileViewModel) {
     val username = loginViewModel.loggedInUser.value ?: ""
     val email = loginViewModel.loggedInEmail.value ?: "" // Haal het e-mailadres op
+    val validationError by profileViewModel.validationError.collectAsState()
+    val updateSuccess by profileViewModel.updateSuccess.collectAsState()
 
-    var phone by remember { mutableStateOf(TextFieldValue()) }
+    var phone by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue()) }
     var confirmPassword by remember { mutableStateOf(TextFieldValue()) }
+
+    LaunchedEffect(key1 = profileViewModel) {
+        val currentPhone = profileViewModel.getCurrentPhoneNumber()
+        phone = TextFieldValue(currentPhone)
+    }
 
     Column(
         modifier = Modifier
@@ -75,7 +89,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            enabled = false // Maak dit veld alleen-lezen
+            enabled = false
         )
 
         TextField(
@@ -86,7 +100,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 16.dp),
-            enabled = false // Maak dit veld alleen-lezen
+            enabled = false
         )
 
         TextField(
@@ -131,13 +145,17 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
 
         Button(
             onClick = {
-                if (password.text.text.toString() == confirmPassword.text.text.toString()) {
-                    profileViewModel.updateProfile(
-                        phone,
-                        password.text
-                    )
-                } else {
-                    // Toon een foutmelding dat de wachtwoorden niet overeenkomen
+                if (profileViewModel.validateInput(
+                        phone.text,
+                        password.text,
+                        confirmPassword.text
+                    )) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        profileViewModel.updateProfile(
+                            phone,
+                            password.text
+                        )
+                    }
                 }
             },
             modifier = Modifier
@@ -147,17 +165,35 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             Text("Update profiel")
         }
 
+        if (validationError != null) {
+            AlertDialog(
+                onDismissRequest = { profileViewModel.clearValidationError() },
+                title = { Text("Validatiefout") },
+                text = { Text(validationError!!) },
+                confirmButton = {
+                    Button(onClick = { profileViewModel.clearValidationError() }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+        if (updateSuccess == true) {
+            AlertDialog(
+                onDismissRequest = { profileViewModel.clearUpdateSuccess() },
+                title = { Text("Profiel bijgewerkt") },
+                text = { Text("Wijzigingen opgeslagen.") },
+                confirmButton = {
+                    Button(onClick = {
+                        profileViewModel.clearUpdateSuccess()
+                        navController.navigate("home")
+                    }) {
+                        Text("OK")
+                    }
+                })
+        }
     }
 }
-
-
-
-/*data class UserProfile(
-    var username: String,
-    var phone: String,
-    var email: String,
-    var password: String
-)*/
 
 /*@Preview(showBackground = true)
 @Composable

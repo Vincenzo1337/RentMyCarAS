@@ -62,13 +62,6 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
     val registrationStatus by registerViewModel.registrationStatus.collectAsState()
     val errorMessage by registerViewModel.errorMessage.collectAsState()
 
-    fun isValidPhoneNumber(phone: String): Boolean {
-        return phone.all { it.isDigit() || it == '+' }
-    }
-
-    fun isValidEmail(email: String): Boolean {
-        return email.contains("@") && email.contains(".")
-    }
 
     Column(
         modifier = Modifier
@@ -194,45 +187,39 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
         ) {
             Text("Registreer")
         }
-/*
-        if (registrationStatus) {
-            navController.navigate("login")
-        }*/
-    }
 
-    LaunchedEffect(isRegistering) {
-        if (isRegistering) {
-            registerViewModel.register(
-                userName = name.text,
-                phone = phone.text,
-                email = email.text,
-                password = passwordValue.text
+        LaunchedEffect(isRegistering) {
+            if (isRegistering) {
+                registerViewModel.register(
+                    userName = name.text,
+                    phone = phone.text,
+                    email = email.text,
+                    password = passwordValue.text
+                )
+
+                showDialog = true
+                isRegistering = false
+            }
+        }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Melding") },
+                text = { Text(dialogMessage) },
+                confirmButton = {
+                    Button(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
             )
-/*            if (registerViewModel.getRegistrationStatus()) {
-                navController.navigate("login")
-            }*/
-            showDialog = true
-            isRegistering = false
         }
     }
 
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text("Melding") },
-            text = { Text(dialogMessage) },
-            confirmButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
-}
-
-@Composable
-fun RegisterScreenPreview() {
-    RentMyCarASTheme {
-        RegisterScreen(navController = rememberNavController())
+    @Composable
+    fun RegisterScreenPreview() {
+        RentMyCarASTheme {
+            RegisterScreen(navController = rememberNavController())
+        }
     }
 }
