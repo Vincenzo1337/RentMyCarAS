@@ -3,6 +3,7 @@ package com.example.rentmycaras.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
@@ -21,5 +22,16 @@ class CarDetailViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
                 _car.value = car.body()
             }
         }
+    }
+}
+
+
+class CarDetailViewModelFactory(private val loginViewModel: LoginViewModel) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ProfileViewModel(loginViewModel) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

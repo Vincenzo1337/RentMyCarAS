@@ -14,6 +14,7 @@ import com.example.rentmycaras.screens.LoginScreen
 import com.example.rentmycaras.screens.ProfileScreen
 import com.example.rentmycaras.screens.RegisterScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
+import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModelFactory
@@ -34,13 +35,14 @@ fun ParentComposable() {
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
     val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
+    val carDetailViewModel: CarDetailViewModel = viewModel()
 
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController, loginViewModel) }
         composable("home") { HomeScreen(navController, loginViewModel) }
         composable("register") { RegisterScreen(navController) }
         composable("profile") { ProfileScreen(navController, loginViewModel, profileViewModel) }
-        composable("carDetails/{carId}") { CarDetailScreen(navController) }
+        composable("carDetails/{carId}") { CarDetailScreen(navController, carDetailViewModel, loginViewModel) }
     }
 }
 

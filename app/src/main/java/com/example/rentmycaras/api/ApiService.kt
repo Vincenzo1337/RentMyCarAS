@@ -1,5 +1,6 @@
 package com.example.rentmycaras.api
 
+import Reservation
 import com.example.rentmycaras.models.Account
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.models.User
@@ -48,6 +49,12 @@ interface CarApiService {
 
     @PUT("/account/{username}")
     suspend fun updateAccount(@Path("username") username: String, @Body account: Account): Response<Unit>
+
+    @GET("/reservations/{car_id}/availability")
+    suspend fun getAvailability(@Path("car_id") carId: Int): Response<Boolean>
+
+    @POST("/reservations")
+    suspend fun createReservation(@Body reservation: Reservation): Response<String>
 }
 
 object CarApi {
