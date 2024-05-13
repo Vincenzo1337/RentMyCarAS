@@ -51,10 +51,6 @@ fun CarDetailScreen(
     loginViewModel: LoginViewModel,
     backStackEntry: NavBackStackEntry
 ) {
-    val carId = backStackEntry.arguments?.getString("carId")
-    LaunchedEffect(carId) {
-        carId?.let { carDetailViewModel.getCar(it) }
-    }
 
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
@@ -66,9 +62,14 @@ fun CarDetailScreen(
         mutableStateOf(true)
     }
 
-    LaunchedEffect(key1 = null) {
-        CarApi.carApiService.getAvailability(carDetailViewModel.car.value?.id ?: 0).let {
-            available.value = it.body() ?: false
+    val carId = backStackEntry.arguments?.getString("carId")
+    LaunchedEffect(carId) {
+        carId?.let {
+            carDetailViewModel.getCar(it)
+            //TODO move this to carDetailViewModel
+            CarApi.carApiService.getAvailability(it.toInt()).let {
+                available.value = it.body() ?: false
+            }
         }
     }
 
@@ -162,6 +163,7 @@ fun CarDetailScreen(
                 Text(text = "Reserveer")
             }
 
+            //todo use rememberSaveable to save the dialog state
             if (carDetailViewModel.reservationSuccess.value == true) {
                 AlertDialog(
                     onDismissRequest = { carDetailViewModel.clearReservationSuccess() },
