@@ -74,6 +74,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation ("androidx.compose.runtime:runtime-livedata:1.6.4")
     implementation ("androidx.compose.material:material:1.1.0-alpha01")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 
 
     // added

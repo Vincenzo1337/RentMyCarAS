@@ -34,15 +34,25 @@ class MainActivity : ComponentActivity() {
 fun ParentComposable() {
     val navController = rememberNavController()
     val loginViewModel: LoginViewModel = viewModel()
-    val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
-    val carDetailViewModel: CarDetailViewModel = viewModel()
 
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController, loginViewModel) }
         composable("home") { HomeScreen(navController, loginViewModel) }
         composable("register") { RegisterScreen(navController) }
-        composable("profile") { ProfileScreen(navController, loginViewModel, profileViewModel) }
-        composable("carDetails/{carId}") { CarDetailScreen(navController, carDetailViewModel, loginViewModel) }
+        composable("profile") { backStackEntry ->
+            val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
+            ProfileScreen(navController, loginViewModel, profileViewModel)
+        }
+        composable("carDetails/{carId}") { backStackEntry ->
+            val carDetailViewModel: CarDetailViewModel = viewModel(
+                factory = CarDetailViewModel.CarDetailViewModelFactory(
+                    loginViewModel,
+                    backStackEntry.savedStateHandle
+                )
+            )
+            CarDetailScreen(navController, carDetailViewModel, loginViewModel, backStackEntry)
+        }
     }
 }
+
 

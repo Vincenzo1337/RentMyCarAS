@@ -7,6 +7,7 @@ import com.example.rentmycaras.models.User
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.Body
@@ -54,7 +55,8 @@ interface CarApiService {
     suspend fun getAvailability(@Path("car_id") carId: Int): Response<Boolean>
 
     @POST("/reservations")
-    suspend fun createReservation(@Body reservation: Reservation): Response<String>
+    suspend fun createReservation(@Body reservation: Reservation): Response<ResponseBody>
+
 }
 
 object CarApi {

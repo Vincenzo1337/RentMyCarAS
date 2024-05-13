@@ -9,13 +9,15 @@ import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
 import kotlinx.coroutines.launch
 
-class CarDetailViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
-    private val carId: String = checkNotNull(savedStateHandle["carId"])
+class CarDetailViewModel(private val loginViewModel: LoginViewModel, savedStateHandle: SavedStateHandle): ViewModel() {
 
     private val _car: MutableLiveData<Car> = MutableLiveData()
     val car: MutableLiveData<Car> = _car
 
-    fun getCar() {
+    private val _reservationSuccess: MutableLiveData<Boolean> = MutableLiveData()
+    val reservationSuccess: MutableLiveData<Boolean> = _reservationSuccess
+
+    fun getCar(carId: String) {
         viewModelScope.launch {
             val car = CarApi.carApiService.getCarById(carId)
             if (car.isSuccessful) {
@@ -23,15 +25,25 @@ class CarDetailViewModel(savedStateHandle: SavedStateHandle): ViewModel() {
             }
         }
     }
-}
 
+    fun updateReservationSuccess(success: Boolean) {
+        _reservationSuccess.value = success
+    }
 
-class CarDetailViewModelFactory(private val loginViewModel: LoginViewModel) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ProfileViewModel(loginViewModel) as T
+    fun clearReservationSuccess() {
+        _reservationSuccess.value = null
+    }
+
+    class CarDetailViewModelFactory(
+        private val loginViewModel: LoginViewModel,
+        private val savedStateHandle: SavedStateHandle
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(CarDetailViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return CarDetailViewModel(loginViewModel, savedStateHandle) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
