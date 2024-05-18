@@ -84,4 +84,12 @@ dependencies {
     // Retrofit with Kotlin serialization Converter
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.5")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-alpha04")
+    implementation ("androidx.compose.material:material-icons-extended:1.0.5")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.0.5")
+
+
+
 }

@@ -4,43 +4,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,7 +27,6 @@ import androidx.navigation.NavController
 import com.example.rentmycaras.R
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
-import com.example.rentmycaras.ui_components.FilterChipGroup
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
@@ -61,9 +34,83 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
 
-    val loggedInUser by loginViewModel.loggedInUser.observeAsState()
-    var showMenu by remember { mutableStateOf(false) }
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    val tabs = listOf("Home", "Contact")
 
+    Scaffold(
+        topBar = {
+            Column {
+                TopAppBar(
+                    title = { Text(text = "Rent My Car", color = Color.White) },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Blue
+                    ),
+                    actions = {
+                        var showMenu by remember { mutableStateOf(false) }
+                        val loggedInUser by loginViewModel.loggedInUser.observeAsState()
+
+                        Row(
+                            modifier = Modifier
+                                .clickable { showMenu = true }
+                                .padding(end = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "${loggedInUser ?: "Onbekend"}", color = Color.White)
+                            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.White)
+                        }
+
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                onClick = {
+                                    navController.navigate("profile")
+                                    showMenu = false
+                                },
+                                text = { Text("Profiel") }
+                            )
+                            DropdownMenuItem(
+                                onClick = {
+                                    loginViewModel.logout()
+                                    navController.navigate("login")
+                                    showMenu = false
+                                },
+                                text = { Text("Afmelden") }
+                            )
+                        }
+                    }
+                )
+                TabRow(selectedTabIndex = selectedTabIndex) {
+                    tabs.forEachIndexed { index, title ->
+                        Tab(
+                            selected = selectedTabIndex == index,
+                            onClick = { selectedTabIndex = index },
+                            text = { Text(text = title, modifier = Modifier.padding(16.dp)) }
+                        )
+                    }
+                }
+            }
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(all = 12.dp)
+                    .background(Color(0xFFE0E0E0)) // Light grey background
+            ) {
+                when (selectedTabIndex) {
+                    0 -> HomeContent(navController, loginViewModel)
+                    1 -> ContactContent()
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeContent(navController: NavController, loginViewModel: LoginViewModel) {
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
         "Volkswagen" to R.drawable.golf_r,
@@ -74,158 +121,139 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         return carImagesMap[brand] ?: R.drawable.red_car
     }
 
-    Column(modifier = Modifier.padding(all = 12.dp)) {
+    val scope = rememberCoroutineScope()
+    var showLoading by remember { mutableStateOf(false) }
+    var searchInput by remember { mutableStateOf<String?>(null) }
+    val cars = remember { mutableStateListOf<Car>() }
+    val gridState = rememberLazyGridState()
 
-        val chipsList = listOf("Home")
-        var headLine by remember { mutableStateOf(chipsList[0]) }
-        val scope = rememberCoroutineScope()
+    val apiCar = CarApi.carApiService
 
-        var showLoading by remember { mutableStateOf(false) }
-        var searchInput by remember {
-            mutableStateOf<String?>(null)
-        }
-        val cars = remember {
-            mutableStateListOf<Car>()
-        }
-        val gridState = rememberLazyGridState()
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.End)
-                .clickable { showMenu = true }
-        ) {
-            Text(text = "${loggedInUser ?: "Onbekend"}")
-            Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
-
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false }
-            ) {
-                DropdownMenuItem(onClick = {
-                    navController.navigate("profile")
-                    showMenu = false
-                }) {
-                    Text("Profiel")
-                }
-                DropdownMenuItem(onClick = {
-                    loginViewModel.logout()
-                    navController.navigate("login")
-                    showMenu = false
-                }) {
-                    Text("Afmelden")
-                }
-            }
-        }
-
-        val apiCar = CarApi.carApiService
-
-        LaunchedEffect(key1 = null) {
-            showLoading = true
-            scope.launch {
-                when (headLine) {
-                    "Home" -> {
-                        val carsResponse = apiCar.getAllCars(searchInput)
-                        cars.clear()
-                        cars.addAll(carsResponse)
-                    }
-                }
-                showLoading = !showLoading
-            }
-        }
-
-        Text(
-            style = MaterialTheme.typography.headlineLarge,
-            text = headLine
-        )
-        Divider()
-
-
-        FilterChipGroup(items = chipsList,
-            onSelectedChanged = { selectedIndex: Int ->
-                headLine = chipsList[selectedIndex]
-            })
-
-        OutlinedTextField(modifier = Modifier.fillMaxWidth(),
-            value = searchInput ?: "",
-            label = { Text("Filter op auto of merk...") },
-            onValueChange = { value ->
-                searchInput = value
-            },
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Filled.Lock,
-                    contentDescription = "Localized Description",
-                    modifier = Modifier.size(FilterChipDefaults.IconSize)
-                )
-            }
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Button(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .width(200.dp),
-            onClick = {
-                showLoading = true
-                scope.launch {
-                    when (headLine) {
-                        "Home" -> {
-                            val carsResponse = apiCar.getAllCars(searchInput)
-                            cars.clear()
-                            cars.addAll(carsResponse)
-                        }
-                    }
-                    showLoading = !showLoading
-                }
-
-            }) {
-            Text(text = "Filter")
-        }
-        if (showLoading) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
-        LazyVerticalGrid(columns = GridCells.Fixed(2), state = gridState, modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 16.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),) {
-            items(cars.size) { index ->
-                val car = cars[index]
-                Card(
-
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .padding(vertical = 8.dp)
-                        .fillMaxWidth()
-                        .background(Color.LightGray)
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = {
-                                    navController.navigate("carDetails/${car.id}" )
-                                }
-                            )
-                        }
-                ) {
-
-                        Image(
-                            painterResource(getCarImage(car.brand)),
-                            contentDescription = "",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .height(120.dp)
-                                .fillMaxWidth()
-                        )
-                    Text(text = car.brand)
-                    Text(text = car.type)
-                    Text(text = car.owner.name ?: "Onbekend")
-                }
-
-            }
+    LaunchedEffect(key1 = null) {
+        showLoading = true
+        scope.launch {
+            val carsResponse = apiCar.getAllCars(searchInput)
+            cars.clear()
+            cars.addAll(carsResponse)
+            showLoading = false
         }
     }
 
+    Text(
+        style = MaterialTheme.typography.headlineLarge,
+        text = "Home",
+        color = Color.DarkGray // Dark gray headline color
+    )
+    Divider(color = Color.Black) // Black divider color
+
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = searchInput ?: "",
+        label = { Text("Filter op auto of merk...") },
+        onValueChange = { value ->
+            searchInput = value
+        },
+        singleLine = true,
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Lock,
+                contentDescription = "Localized Description",
+                modifier = Modifier.size(FilterChipDefaults.IconSize)
+            )
+        }
+    )
+
+    Spacer(modifier = Modifier.height(10.dp))
+
+    Button(
+        modifier = Modifier
+            .width(200.dp),
+//            .align(Alignment.CenterHorizontally),
+        onClick = {
+            showLoading = true
+            scope.launch {
+                val carsResponse = apiCar.getAllCars(searchInput)
+                cars.clear()
+                cars.addAll(carsResponse)
+                showLoading = false
+            }
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Blue,
+            contentColor = Color.White
+        ) // Blue button with white text
+    ) {
+        Text(text = "Filter")
+    }
+
+    if (showLoading) {
+        LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = Color.Blue) // Blue progress indicator
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        state = gridState,
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            top = 16.dp,
+            end = 12.dp,
+            bottom = 16.dp
+        )
+    ) {
+        items(cars) { car ->
+            CarCard(car, navController, carImagesMap)
+        }
+    }
+}
+
+@Composable
+fun CarCard(car: Car, navController: NavController, carImagesMap: Map<String, Int>) {
+    fun getCarImage(brand: String): Int {
+        return carImagesMap[brand] ?: R.drawable.red_car
+    }
+
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .padding(vertical = 8.dp)
+            .fillMaxWidth()
+            .background(Color.LightGray)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        navController.navigate("carDetails/${car.id}")
+                    }
+                )
+            }
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(8.dp)
+                .background(Color.White) // White card background
+        ) {
+            Image(
+                painter = painterResource(getCarImage(car.brand)),
+                contentDescription = null,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .height(120.dp)
+                    .fillMaxWidth()
+            )
+            Text(text = car.brand, color = Color.Black) // Black text color
+            Text(text = car.type, color = Color.DarkGray) // Dark gray text color
+            Text(text = car.owner.name ?: "Onbekend", color = Color.DarkGray) // Dark gray text color
+        }
+    }
+}
+
+@Composable
+fun ContactContent() {
+    // Contact screen content here
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "Contact Screen", color = Color.Black)
+    }
 }
