@@ -40,7 +40,7 @@ fun ParentComposable() {
         composable("login") { LoginScreen(navController, loginViewModel) }
         composable("home") { HomeScreen(navController, loginViewModel) }
         composable("register") { RegisterScreen(navController) }
-        composable("reservations") { ReservationScreen(navController) }
+        composable("reservations") { ReservationScreen(navController, loginViewModel) }
         composable("profile") { backStackEntry ->
             val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
             ProfileScreen(navController, loginViewModel, profileViewModel)

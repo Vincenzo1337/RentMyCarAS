@@ -57,6 +57,8 @@ interface CarApiService {
     @POST("/reservations")
     suspend fun createReservation(@Body reservation: Reservation): Response<ResponseBody>
 
+    @GET("/reservations/account/{userid}")
+    suspend fun getReservationsByUser(@Path("userid") userid: Int): List<Reservation>
 }
 
 object CarApi {
