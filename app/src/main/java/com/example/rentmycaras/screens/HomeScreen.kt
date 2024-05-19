@@ -108,6 +108,12 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                     Text("Profiel")
                 }
                 DropdownMenuItem(onClick = {
+                    navController.navigate("reservations")
+                    showMenu = false
+                }) {
+                    Text("Reserveringen")
+                }
+                DropdownMenuItem(onClick = {
                     loginViewModel.logout()
                     navController.navigate("login")
                     showMenu = false

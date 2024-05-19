@@ -13,6 +13,7 @@ import com.example.rentmycaras.screens.HomeScreen
 import com.example.rentmycaras.screens.LoginScreen
 import com.example.rentmycaras.screens.ProfileScreen
 import com.example.rentmycaras.screens.RegisterScreen
+import com.example.rentmycaras.screens.ReservationScreen
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
@@ -39,6 +40,7 @@ fun ParentComposable() {
         composable("login") { LoginScreen(navController, loginViewModel) }
         composable("home") { HomeScreen(navController, loginViewModel) }
         composable("register") { RegisterScreen(navController) }
+        composable("reservations") { ReservationScreen(navController) }
         composable("profile") { backStackEntry ->
             val profileViewModel: ProfileViewModel = viewModel(factory = ProfileViewModelFactory(loginViewModel))
             ProfileScreen(navController, loginViewModel, profileViewModel)
