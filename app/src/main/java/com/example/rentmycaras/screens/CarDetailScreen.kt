@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,11 +53,13 @@ fun CarDetailScreen(
     loginViewModel: LoginViewModel,
     backStackEntry: NavBackStackEntry
 ) {
-
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
         "Volkswagen" to R.drawable.golf_r,
-        "Volvo" to R.drawable.volvo_v60
+        "Volvo" to R.drawable.volvo_v60,
+        "Toyota" to R.drawable.toyota_corolla,
+        "Ford" to R.drawable.ford_mustang,
+        "Honda" to R.drawable.honda_civic
     )
 
     val available = remember {
@@ -78,6 +82,15 @@ fun CarDetailScreen(
     }
 
     val car = remember { carDetailViewModel.car }
+    val reservationSuccess by carDetailViewModel.reservationSuccess.observeAsState()
+
+    LaunchedEffect(reservationSuccess) {
+        if (reservationSuccess == true) {
+            // Navigeer terug naar het homescherm als de reservering succesvol is
+            navController.navigate("home")
+        }
+    }
+
     LazyColumn(  // Gebruik LazyColumn in plaats van Column
         modifier = Modifier
             .fillMaxSize()
@@ -163,7 +176,6 @@ fun CarDetailScreen(
                 Text(text = "Reserveer")
             }
 
-            //todo use rememberSaveable to save the dialog state
             if (carDetailViewModel.reservationSuccess.value == true) {
                 AlertDialog(
                     onDismissRequest = { carDetailViewModel.clearReservationSuccess() },
@@ -197,4 +209,5 @@ fun CarDetailScreen(
         }
     }
 }
+
 

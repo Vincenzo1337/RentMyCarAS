@@ -67,7 +67,10 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
         "Volkswagen" to R.drawable.golf_r,
-        "Volvo" to R.drawable.volvo_v60
+        "Volvo" to R.drawable.volvo_v60,
+        "Toyota" to R.drawable.toyota_corolla,
+        "Ford" to R.drawable.ford_mustang,
+        "Honda" to R.drawable.honda_civic
     )
 
     fun getCarImage(brand: String): Int {

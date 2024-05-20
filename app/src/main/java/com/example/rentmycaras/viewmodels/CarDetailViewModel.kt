@@ -19,12 +19,16 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel, savedStateH
 
     fun getCar(carId: String) {
         viewModelScope.launch {
-            val car = CarApi.carApiService.getCarById(carId)
-            if (car.isSuccessful) {
-                _car.value = car.body()
+            val carIdInt = carId.toIntOrNull()
+            if (carIdInt != null) {
+                val car = CarApi.carApiService.getCarById(carIdInt)
+                if (car.isSuccessful) {
+                    _car.value = car.body()
+                }
             }
         }
     }
+
 
     fun updateReservationSuccess(success: Boolean) {
         _reservationSuccess.value = success
