@@ -262,17 +262,15 @@ fun CarCard(car: Car, navController: NavController, carImagesMap: Map<String, In
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ContactContent() {
-    // Define the initial position for Avans Hogeschool in Breda
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
     val properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
     val avansHA = LatLng(51.58466, 4.797556)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition(avansHA, 18f, 45f, 270f)
-    // Define the initial camera position state
 
     }
 
-    // Handle permissions for location access
+
     val permissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -280,12 +278,10 @@ fun ContactContent() {
         )
     )
 
-    // Request permissions on launch
     LaunchedEffect(Unit) {
         permissionsState.launchMultiplePermissionRequest()
     }
 
-    // Conditionally render map or permission request UI based on permissions
     if (permissionsState.allPermissionsGranted) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
