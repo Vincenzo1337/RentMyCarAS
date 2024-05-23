@@ -32,12 +32,15 @@ import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.MapType
+import com.google.maps.android.compose.MarkerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -259,10 +262,17 @@ fun CarCard(car: Car, navController: NavController, carImagesMap: Map<String, In
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ContactContent() {
+    // Define the initial position for Avans Hogeschool in Breda
+    var uiSettings by remember { mutableStateOf(MapUiSettings()) }
+    val properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
+    val avansHA = LatLng(51.58466, 4.797556)
     val cameraPositionState = rememberCameraPositionState {
-        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(LatLng(37.7749, -122.4194), 12f)
+        position = CameraPosition(avansHA, 18f, 45f, 270f)
+    // Define the initial camera position state
+
     }
 
+    // Handle permissions for location access
     val permissionsState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -270,21 +280,23 @@ fun ContactContent() {
         )
     )
 
+    // Request permissions on launch
     LaunchedEffect(Unit) {
         permissionsState.launchMultiplePermissionRequest()
     }
 
+    // Conditionally render map or permission request UI based on permissions
     if (permissionsState.allPermissionsGranted) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState,
-            properties = MapProperties(isMyLocationEnabled = true),
-            uiSettings = MapUiSettings(zoomControlsEnabled = true)
+            properties = properties,
+            uiSettings = uiSettings
         ) {
             Marker(
-//                position = LatLng(37.7749, -122.4194),
-                title = "San Francisco",
-                snippet = "Marker in San Francisco"
+                state = MarkerState(position = avansHA),
+                title = "Avans Hogeschool",
+                snippet = "Hogeschoollaan 1, Breda"
             )
         }
     } else {
