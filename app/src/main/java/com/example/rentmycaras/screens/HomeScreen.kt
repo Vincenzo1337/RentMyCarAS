@@ -1,5 +1,7 @@
 package com.example.rentmycaras.screens
 
+import android.Manifest
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +30,14 @@ import com.example.rentmycaras.R
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.viewmodels.LoginViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -168,7 +178,6 @@ fun HomeContent(navController: NavController, loginViewModel: LoginViewModel) {
     Button(
         modifier = Modifier
             .width(200.dp),
-//            .align(Alignment.CenterHorizontally),
         onClick = {
             showLoading = true
             scope.launch {
@@ -247,13 +256,50 @@ fun CarCard(car: Car, navController: NavController, carImagesMap: Map<String, In
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ContactContent() {
-    // Contact screen content here
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Contact Screen", color = Color.Black)
+    val cameraPositionState = rememberCameraPositionState {
+        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(LatLng(37.7749, -122.4194), 12f)
+    }
+
+    val permissionsState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    )
+
+    LaunchedEffect(Unit) {
+        permissionsState.launchMultiplePermissionRequest()
+    }
+
+    if (permissionsState.allPermissionsGranted) {
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            properties = MapProperties(isMyLocationEnabled = true),
+            uiSettings = MapUiSettings(zoomControlsEnabled = true)
+        ) {
+            Marker(
+//                position = LatLng(37.7749, -122.4194),
+                title = "San Francisco",
+                snippet = "Marker in San Francisco"
+            )
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Location permissions are required to display the map.")
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = { permissionsState.launchMultiplePermissionRequest() }) {
+                Text("Grant Permissions")
+            }
+        }
     }
 }

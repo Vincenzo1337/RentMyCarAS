@@ -85,11 +85,19 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
-    implementation ("androidx.compose.runtime:runtime-livedata:1.0.5")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0-alpha04")
-    implementation ("androidx.compose.material:material-icons-extended:1.0.5")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.0.5")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+
+    implementation("com.google.maps.android:maps-compose:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation ("com.google.accompanist:accompanist-permissions:0.30.0")
 
 
+    implementation("com.google.maps.android:android-maps-utils:3.4.0")
 
+
+//
 }
