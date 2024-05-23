@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -276,12 +277,24 @@ fun ContactContent() {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
         )
+
     )
 
     LaunchedEffect(Unit) {
         permissionsState.launchMultiplePermissionRequest()
     }
-
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Tekstbox
+        Text(
+            text = "Wij zijn bereikbaar op deze locatie:",
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(), // Voeg deze modifier toe
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
+        )
     if (permissionsState.allPermissionsGranted) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
@@ -310,4 +323,4 @@ fun ContactContent() {
             }
         }
     }
-}
+}}
