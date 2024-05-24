@@ -8,6 +8,9 @@ plugins {
 android {
     namespace = "com.example.rentmycaras"
     compileSdk = 34
+//    androidResources {
+//        generateLocaleConfig = true
+//    }
 
     defaultConfig {
         applicationId = "com.example.rentmycaras"
@@ -97,7 +100,7 @@ dependencies {
 
 
     implementation("com.google.maps.android:android-maps-utils:3.4.0")
-
+    implementation("androidx.appcompat:appcompat:1.6.1")
 
 //
 }

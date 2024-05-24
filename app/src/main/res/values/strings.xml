@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">RentMyCarAS</string>
+
+        <string name="Filter_auto">Filter op auto of merk</string>
+        <string name="profiel">Profiel</string>
+        <string name="afmelden">Afmelden</string>
+    <string name="registreren">Nog geen account? Registreer hier</string>
+    <!-- Voeg hier meer vertalingen toe -->
+
+
 </resources>

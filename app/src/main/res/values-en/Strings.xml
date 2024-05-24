@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RentMyCarAS</string>
+    <string name="Filter_auto">Filter car of brand</string>
+    <string name="profiel">Profile</string>
+    <string name="afmelden">Log out</string>
+    <string name="registreren">No account? Registrer here</string>
+</resources>

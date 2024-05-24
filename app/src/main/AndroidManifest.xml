@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RentMyCarAS"
-        tools:targetApi="31">
+        tools:targetApi="tiramisu"
+        android:localeConfig="@xml/locale_config">
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBUvpnLER4ynCketuj2xUdxHRpAIsQJEso"/>
         <activity

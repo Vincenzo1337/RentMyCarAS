@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -82,15 +83,26 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                                     navController.navigate("profile")
                                     showMenu = false
                                 },
-                                text = { Text("Profiel") }
+                                text = {
+                                    Text(
+                                        text = stringResource(id = R.string.profiel),
+                                        color = Color.Black // Stel de kleur van de tekst hier in
+                                    )
+                                }
                             )
+
                             DropdownMenuItem(
                                 onClick = {
                                     loginViewModel.logout()
                                     navController.navigate("login")
                                     showMenu = false
                                 },
-                                text = { Text("Afmelden") }
+                                text = {
+                                    Text(
+                                        text = stringResource(id = R.string.afmelden),
+                                        color = Color.Black // Stel de kleur van de tekst hier in
+                                    )
+                                }
                             )
                         }
                     }
