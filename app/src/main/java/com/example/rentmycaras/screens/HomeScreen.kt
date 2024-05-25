@@ -21,6 +21,7 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
@@ -54,13 +55,16 @@ import com.example.rentmycaras.R
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.ui_components.FilterChipGroup
+import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
-
+    val carDetailViewModel: CarDetailViewModel = viewModel(factory = CarDetailViewModel.CarDetailViewModelFactory(
+        loginViewModel
+    ))
     val loggedInUser by loginViewModel.loggedInUser.observeAsState()
     var showMenu by remember { mutableStateOf(false) }
 
@@ -77,8 +81,10 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         return carImagesMap[brand] ?: R.drawable.red_car
     }
 
-    Column(modifier = Modifier.padding(all = 12.dp)) {
-
+    Column(
+        modifier = Modifier.padding(all = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         val chipsList = listOf("Home")
         var headLine by remember { mutableStateOf(chipsList[0]) }
         val scope = rememberCoroutineScope()
@@ -148,7 +154,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         )
         Divider()
 
-
         FilterChipGroup(items = chipsList,
             onSelectedChanged = { selectedIndex: Int ->
                 headLine = chipsList[selectedIndex]
@@ -205,7 +210,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
             items(cars.size) { index ->
                 val car = cars[index]
                 Card(
-
                     modifier = Modifier
                         .padding(4.dp)
                         .padding(vertical = 8.dp)
@@ -219,22 +223,66 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                             )
                         }
                 ) {
-
-                        Image(
-                            painterResource(getCarImage(car.brand)),
-                            contentDescription = "",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .height(120.dp)
-                                .fillMaxWidth()
-                        )
+                    Image(
+                        painterResource(getCarImage(car.brand)),
+                        contentDescription = "",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .height(120.dp)
+                            .fillMaxWidth()
+                    )
                     Text(text = car.brand)
                     Text(text = car.type)
-                    Text(text = car.owner.name ?: "Onbekend")
+                    Text(text = car.owner?.name ?: "Onbekend")
                 }
-
             }
         }
     }
 
+    var brand by remember { mutableStateOf("") }
+    var type by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+
+    Button(
+        onClick = { showDialog = true }
+    ) {
+        Text(text = "Voeg auto toe")
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Voeg auto toe") },
+            text = {
+                OutlinedTextField(
+                    value = brand,
+                    onValueChange = { brand = it },
+                    label = { Text("Merk") }
+                )
+                OutlinedTextField(
+                    value = type,
+                    onValueChange = { type = it },
+                    label = { Text("Type") }
+                )
+                // Voeg hier meer TextFields toe voor de andere autodetails
+            },
+            confirmButton = {
+                Button(onClick = {
+                    // Roep de addCar functie aan met de ingevoerde details
+                    carDetailViewModel.addCar(brand, type /*, andere details */)
+                    showDialog = false
+                }) {
+                    Text("Voeg auto toe")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Annuleer")
+                }
+            }
+        )
+    }
 }
+
+
+

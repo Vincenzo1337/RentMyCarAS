@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 // todo: wanneer bijv owner is null, laat dan niet zien
 @Serializable
 data class Car(
-    val id: Int,
+    val id: Int? = null,
     val brand: String,
     val type: String,
     val category: CarCategory,
@@ -13,9 +13,9 @@ data class Car(
     val timeBlock: List<TimeBlock>,
     val description: String,
     val ownerId: Int,
-    val owner: User
-//    val photos: List<String>
+    val owner: User? = null
 )
+
 
 enum class CarCategory {
     ICE,

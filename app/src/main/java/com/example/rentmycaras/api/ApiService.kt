@@ -39,6 +39,9 @@ interface CarApiService {
     @GET("/car/{id}")
     suspend fun getCarById(@Path("id") id: Int): Response<Car>
 
+    @POST("/cars")
+    suspend fun cars(@Body car: Car): Response<Unit>
+
     @POST("/login")
     suspend fun login(@Body account: Account): Response<Unit>
 

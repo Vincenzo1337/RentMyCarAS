@@ -47,13 +47,11 @@ fun ParentComposable() {
         }
         composable("carDetails/{carId}") { backStackEntry ->
             val carDetailViewModel: CarDetailViewModel = viewModel(
-                factory = CarDetailViewModel.CarDetailViewModelFactory(
-                    loginViewModel,
-                    backStackEntry.savedStateHandle
-                )
+                factory = CarDetailViewModel.CarDetailViewModelFactory(loginViewModel)
             )
             CarDetailScreen(navController, carDetailViewModel, loginViewModel, backStackEntry)
         }
+
     }
 }
 
