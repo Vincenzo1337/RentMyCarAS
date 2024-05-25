@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,6 +54,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.rentmycaras.R
 import com.example.rentmycaras.api.CarApi
+import com.example.rentmycaras.api.CarApiService
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.ui_components.FilterChipGroup
 import com.example.rentmycaras.viewmodels.CarDetailViewModel
@@ -69,6 +69,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
     ))
     val loggedInUser by loginViewModel.loggedInUser.observeAsState()
     var showMenu by remember { mutableStateOf(false) }
+    val apiCar: CarApiService = CarApi.carApiService
 
     val carImagesMap = mapOf(
         "BMW" to R.drawable.bmw_e30,
@@ -99,6 +100,26 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
             mutableStateListOf<Car>()
         }
         val gridState = rememberLazyGridState()
+
+        // Functie om auto's op te halen
+        fun fetchCars() {
+            showLoading = true
+            scope.launch {
+                when (headLine) {
+                    "Home" -> {
+                        val carsResponse = apiCar.getAllCars(searchInput)
+                        cars.clear()
+                        cars.addAll(carsResponse)
+                    }
+                }
+                showLoading = !showLoading
+            }
+        }
+
+        // Roep de functie aan om de auto's op te halen
+        LaunchedEffect(key1 = null) {
+            fetchCars()
+        }
 
         Row(
             modifier = Modifier
@@ -131,22 +152,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                 }) {
                     Text("Afmelden")
                 }
-            }
-        }
-
-        val apiCar = CarApi.carApiService
-
-        LaunchedEffect(key1 = null) {
-            showLoading = true
-            scope.launch {
-                when (headLine) {
-                    "Home" -> {
-                        val carsResponse = apiCar.getAllCars(searchInput)
-                        cars.clear()
-                        cars.addAll(carsResponse)
-                    }
-                }
-                showLoading = !showLoading
             }
         }
 
@@ -202,7 +207,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         if (showLoading) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-        LazyVerticalGrid(columns = GridCells.Fixed(2), state = gridState, modifier = Modifier.fillMaxSize(),
+        LazyVerticalGrid(columns = GridCells.Fixed(2), state = gridState, modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(
                 start = 12.dp,
                 top = 16.dp,
@@ -239,57 +244,54 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                 }
             }
         }
-    }
 
-    var brand by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+        var brand by remember { mutableStateOf("") }
+        var type by remember { mutableStateOf("") }
+        var showDialog by remember { mutableStateOf(false) }
 
-    Button(
-        onClick = { showDialog = true }
-    ) {
-        Text(text = "Voeg auto toe")
-    }
+        Button(
+            onClick = { showDialog = true }
+        ) {
+            Text(text = "Voeg auto toe")
+        }
 
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text("Voeg auto toe") },
-            text = {
-                Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                ) {
-                    OutlinedTextField(
-                        value = brand,
-                        onValueChange = { brand = it },
-                        label = { Text("Merk") }
-                    )
-                    OutlinedTextField(
-                        value = type,
-                        onValueChange = { type = it },
-                        label = { Text("Type") }
-                    )
-                    // Voeg hier meer TextFields toe voor de andere autodetails
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Voeg auto toe") },
+                text = {
+                    Column(
+                        modifier = Modifier.verticalScroll(rememberScrollState())
+                    ) {
+                        OutlinedTextField(
+                            value = brand,
+                            onValueChange = { brand = it },
+                            label = { Text("Merk") }
+                        )
+                        OutlinedTextField(
+                            value = type,
+                            onValueChange = { type = it },
+                            label = { Text("Type") }
+                        )
+                        // Voeg hier meer TextFields toe voor de andere autodetails
+                    }
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        carDetailViewModel.addCar(brand, type /*, andere details */)
+                        showDialog = false
+
+                        fetchCars()
+                    }) {
+                        Text("Voeg auto toe")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { showDialog = false }) {
+                        Text("Annuleer")
+                    }
                 }
-            },
-            confirmButton = {
-                Button(onClick = {
-                    // Roep de addCar functie aan met de ingevoerde details
-                    carDetailViewModel.addCar(brand, type /*, andere details */)
-                    showDialog = false
-                }) {
-                    Text("Voeg auto toe")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showDialog = false }) {
-                    Text("Annuleer")
-                }
-            }
-        )
+            )
+        }
     }
 }
-
-
-
-
