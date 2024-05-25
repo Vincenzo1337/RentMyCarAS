@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -254,17 +256,21 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
             onDismissRequest = { showDialog = false },
             title = { Text("Voeg auto toe") },
             text = {
-                OutlinedTextField(
-                    value = brand,
-                    onValueChange = { brand = it },
-                    label = { Text("Merk") }
-                )
-                OutlinedTextField(
-                    value = type,
-                    onValueChange = { type = it },
-                    label = { Text("Type") }
-                )
-                // Voeg hier meer TextFields toe voor de andere autodetails
+                Column(
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    OutlinedTextField(
+                        value = brand,
+                        onValueChange = { brand = it },
+                        label = { Text("Merk") }
+                    )
+                    OutlinedTextField(
+                        value = type,
+                        onValueChange = { type = it },
+                        label = { Text("Type") }
+                    )
+                    // Voeg hier meer TextFields toe voor de andere autodetails
+                }
             },
             confirmButton = {
                 Button(onClick = {
@@ -283,6 +289,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         )
     }
 }
+
 
 
 
