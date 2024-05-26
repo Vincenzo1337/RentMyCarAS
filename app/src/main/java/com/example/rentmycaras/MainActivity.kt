@@ -20,6 +20,7 @@ import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModelFactory
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,5 +55,6 @@ fun ParentComposable() {
 
     }
 }
+
 
 
