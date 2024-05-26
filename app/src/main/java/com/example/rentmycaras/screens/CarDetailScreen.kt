@@ -86,12 +86,11 @@ fun CarDetailScreen(
 
     LaunchedEffect(reservationSuccess) {
         if (reservationSuccess == true) {
-            // Navigeer terug naar het homescherm als de reservering succesvol is
             navController.navigate("home")
         }
     }
 
-    LazyColumn(  // Gebruik LazyColumn in plaats van Column
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
@@ -125,6 +124,12 @@ fun CarDetailScreen(
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = car.value?.type ?: "")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Brandstoftype: ",
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+            )
+            Text(text = car.value?.category?.name ?: "")
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Beschikbaar: ",

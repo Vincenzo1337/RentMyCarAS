@@ -56,6 +56,7 @@ import com.example.rentmycaras.R
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.api.CarApiService
 import com.example.rentmycaras.models.Car
+import com.example.rentmycaras.models.CarCategory
 import com.example.rentmycaras.ui_components.FilterChipGroup
 import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
@@ -64,9 +65,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
-    val carDetailViewModel: CarDetailViewModel = viewModel(factory = CarDetailViewModel.CarDetailViewModelFactory(
-        loginViewModel
-    ))
+    val carDetailViewModel: CarDetailViewModel = viewModel(
+        factory = CarDetailViewModel.CarDetailViewModelFactory(
+            loginViewModel
+        )
+    )
     val loggedInUser by loginViewModel.loggedInUser.observeAsState()
     var showMenu by remember { mutableStateOf(false) }
     val apiCar: CarApiService = CarApi.carApiService
@@ -207,13 +210,15 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
         if (showLoading) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-        LazyVerticalGrid(columns = GridCells.Fixed(2), state = gridState, modifier = Modifier.weight(1f),
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2), state = gridState, modifier = Modifier.weight(1f),
             contentPadding = PaddingValues(
                 start = 12.dp,
                 top = 16.dp,
                 end = 12.dp,
                 bottom = 16.dp
-            ),) {
+            ),
+        ) {
             items(cars.size) { index ->
                 val car = cars[index]
                 Card(
@@ -225,7 +230,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                         .pointerInput(Unit) {
                             detectTapGestures(
                                 onTap = {
-                                    navController.navigate("carDetails/${car.id}" )
+                                    navController.navigate("carDetails/${car.id}")
                                 }
                             )
                         }
@@ -240,6 +245,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                     )
                     Text(text = car.brand)
                     Text(text = car.type)
+                    Text(text = car.category.name)
                     Text(text = car.owner?.name ?: "Onbekend")
                 }
             }
@@ -247,6 +253,8 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
 
         var brand by remember { mutableStateOf("") }
         var type by remember { mutableStateOf("") }
+        var carCategory by remember { mutableStateOf(CarCategory.ICE) }
+        var description by remember { mutableStateOf("") }
         var showDialog by remember { mutableStateOf(false) }
 
         Button(
@@ -273,12 +281,33 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                             onValueChange = { type = it },
                             label = { Text("Type") }
                         )
-                        // Voeg hier meer TextFields toe voor de andere autodetails
+                        OutlinedTextField(
+                            value = carCategory.name,
+                            onValueChange = { newCategory ->
+                                try {
+                                    carCategory =
+                                        CarCategory.valueOf(newCategory.toUpperCase())
+                                } catch (e: IllegalArgumentException) {
+                                    // Toon een foutmelding aan de gebruiker
+                                }
+                            },
+                            label = { Text("Brandstoftype") }
+                        )
+                        OutlinedTextField(
+                            value = description,
+                            onValueChange = { description = it },
+                            label = { Text("Beschrijving") }
+                        )
                     }
                 },
                 confirmButton = {
                     Button(onClick = {
-                        carDetailViewModel.addCar(brand, type /*, andere details */)
+                        carDetailViewModel.addCar(
+                            brand,
+                            type,
+                            description,
+                            carCategory /*, andere details */
+                        )
                         showDialog = false
 
                         fetchCars()
