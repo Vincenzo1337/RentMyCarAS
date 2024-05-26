@@ -76,12 +76,11 @@ dependencies {
     implementation ("androidx.compose.material:material:1.1.0-alpha01")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
 
-
-    // added
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     // Retrofit with Kotlin serialization Converter
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    testImplementation ("org.mockito:mockito-inline:3.12.4")
 }
