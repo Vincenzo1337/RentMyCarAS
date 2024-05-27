@@ -84,10 +84,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     testImplementation ("org.mockito:mockito-inline:3.12.4")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
-    testImplementation ("org.mockito:mockito-core:2.24.5")
-    androidTestImplementation ("org.mockito:mockito-android:2.24.5")
+    testImplementation ("org.mockito:mockito-core:3.12.4")
     androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.6.7")
     androidTestImplementation ("androidx.test:runner:1.5.2")
     androidTestImplementation ("androidx.test:rules:1.5.0")
-
+    androidTestImplementation ("org.mockito:mockito-android:3.12.4")
 }
