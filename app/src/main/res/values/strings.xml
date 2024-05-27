@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">RentMyCarAS</string>
+
+    <string name="Filter_auto">Filter op auto of merk</string>
+    <string name="profiel">Profiel</string>
+    <string name="afmelden">Afmelden</string>
+    <string name="gebruikersnaam">gebruikersnaam</string>
+    <string name="wachtwoord">Wachtwoord</string>
+    <string name="registreren">Nog geen account? Registreer hier</string>
+    <string name="auto_toevoegen">auto toevoegen</string>
+    <string name="merk">Merk</string>
+    <string name="beschrijving">beschrijving</string>
+    <string name="annuleer">annuleer</string>
+    <string name="contact_opnemen">Neem contact met ons op</string>
+    <string name="bereikbaar">Wij zijn bereikbaar op deze locaties:</string>
+    <string name="contact_gegegevens">Contactgegevens</string>
+    <string name="Telefoon">Telefoon:</string>
+    <string name="Openingstijden">Openingstijden:</string>
+    <string name="gesloten">Gesloten:</string>
+
+
+    <!-- Voeg hier meer vertalingen toe -->
+
+
 </resources>
