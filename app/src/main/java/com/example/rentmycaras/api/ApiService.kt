@@ -17,7 +17,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-private const val BASE_URL: String = "http://192.168.178.136:8080"
+private const val BASE_URL: String = "http://192.168.140.101:8080"
 private val contentType = "application/json".toMediaType()
 
 private val retrofit = Retrofit.Builder()

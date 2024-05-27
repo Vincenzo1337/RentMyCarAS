@@ -8,6 +8,9 @@ plugins {
 android {
     namespace = "com.example.rentmycaras"
     compileSdk = 34
+//    androidResources {
+//        generateLocaleConfig = true
+//    }
 
     defaultConfig {
         applicationId = "com.example.rentmycaras"
@@ -55,33 +58,49 @@ dependencies {
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation ("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.4")
-    implementation ("androidx.compose.material:material:1.1.0-alpha01")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation ("androidx.compose.material:material:1.6.7")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
+
+    // added
     // Kotlin serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     // Retrofit with Kotlin serialization Converter
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.6.7")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.7")
+
+    implementation("com.google.maps.android:maps-compose:4.3.3")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation ("com.google.accompanist:accompanist-permissions:0.30.0")
+
+
+    implementation("com.google.maps.android:android-maps-utils:3.4.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     testImplementation ("org.mockito:mockito-inline:3.12.4")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
     testImplementation ("org.mockito:mockito-core:3.12.4")
@@ -89,4 +108,5 @@ dependencies {
     androidTestImplementation ("androidx.test:runner:1.5.2")
     androidTestImplementation ("androidx.test:rules:1.5.0")
     androidTestImplementation ("org.mockito:mockito-android:3.12.4")
+//
 }

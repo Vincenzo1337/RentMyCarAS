@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.rentmycaras.R
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.example.rentmycaras.viewmodels.ProfileViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -71,7 +73,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         }
 
         Text(
-            text = "Profiel",
+            text = stringResource(id = R.string.profiel),
             style = TextStyle(
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
@@ -84,7 +86,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
         TextField(
             value = username,
             onValueChange = {},
-            label = { Text("Gebruikersnaam") },
+            label = { stringResource(id = R.string.gebruikersnaam) },
             leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -108,7 +110,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             onValueChange = {
                 phone = it.text
             },
-            label = { Text("Telefoonnummer") },
+            label = { stringResource(id = R.string.Telefoon) },
             leadingIcon = { Icon(imageVector = Icons.Default.Phone, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -120,7 +122,7 @@ fun ProfileScreen(navController: NavController, loginViewModel: LoginViewModel, 
             onValueChange = {
                 password = it.text
             },
-            label = { Text("Wachtwoord") },
+            label = { stringResource(id = R.string.wachtwoord) },
             leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -206,5 +208,4 @@ fun ProfileScreenPreview() {
         ProfileScreen(navController, loginViewModel, profileViewModel)
     }
 }*/
-
 

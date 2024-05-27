@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RentMyCarAS</string>
+    <string name="Filter_auto">Filter car or brand</string>
+    <string name="profiel">Profile</string>
+    <string name="afmelden">Log out</string>
+    <string name="registreren">No account? Registrer here</string>
+    <string name="auto_toevoegen">add car</string>
+    <string name="merk">brand</string>
+    <string name="beschrijving">description</string>
+    <string name="annuleer">cancel</string>
+    <string name="contact_opnemen">Contact us</string>
+    <string name="bereikbaar">We are available at these locations:</string>
+    <string name="contact_gegegevens">Contact Info</string>
+    <string name="Telefoon">Phone:</string>
+    <string name="Openingstijden">Opening hour:</string>
+    <string name="gesloten">Closed</string>
+    <string name="gebruikersnaam">User</string>
+    <string name="wachtwoord">Password</string>
+    <string name="reserveren">Reservation</string>
+    <string name="reserveringen">My reservations</string>
+</resources>

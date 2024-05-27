@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -54,7 +55,7 @@ fun ReservationScreen(navController: NavController, loginViewModel: LoginViewMod
             Icon(Icons.Filled.ArrowBack, contentDescription = "Ga terug naar de home pagina")
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Text(text = "Mijn reserveringen",
+        Text(text = stringResource(id = R.string.reserveringen),
             style = MaterialTheme.typography.h5)
 
         LazyColumn {
