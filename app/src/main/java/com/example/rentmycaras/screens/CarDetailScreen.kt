@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
@@ -114,7 +115,7 @@ fun CarDetailScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Merk: ",
+                text = stringResource(id = R.string.merk),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = car.value?.brand ?: "")
@@ -126,19 +127,19 @@ fun CarDetailScreen(
             Text(text = car.value?.type ?: "")
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Brandstoftype: ",
+                text = stringResource(id = R.string.brandstof),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = car.value?.category?.name ?: "")
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Beschikbaar: ",
+                text = stringResource(id = R.string.beschikbaar),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = car.value?.availability?.let { if (it) "Ja" else "Nee" } ?: "")
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "Beschrijving: ",
+                text = stringResource(id = R.string.beschrijving),
                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
             )
             Text(text = car.value?.description ?: "")
@@ -178,7 +179,7 @@ fun CarDetailScreen(
                     .padding(bottom = 16.dp),
                 enabled = car.value?.availability == true && available.value
             ) {
-                Text(text = "Reserveer")
+                Text(text = stringResource(id = R.string.reserveren_auto))
             }
 
             if (carDetailViewModel.reservationSuccess.value == true) {

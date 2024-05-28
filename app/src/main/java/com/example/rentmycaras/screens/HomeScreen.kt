@@ -144,19 +144,26 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
                                 },
                                 text = {
                                     Text(
-//                                        text = "profiel",
                                         text = stringResource(id = R.string.profiel),
                                         color = Color.Black // Stel de kleur van de tekst hier in
                                     )
                                 }
                             )
-                            DropdownMenuItem(onClick = {
-                                navController.navigate("reservations")
-                                showMenu = false
-                            }) {
-                                Text(stringResource(id = R.string.reserveren))
+                            androidx.compose.material3.DropdownMenuItem(
+                                onClick = {
+                                    loginViewModel.logout()
+                                    navController.navigate("reservations")
+                                    showMenu = false
+                                },
 
-                            }
+                                text = {
+                                    Text(
+                                        text = stringResource(id = R.string.reserveringen),
+                                        color = Color.Black // Stel de kleur van de tekst hier in
+                                    )
+                                }
+                            )
+
                             androidx.compose.material3.DropdownMenuItem(
                                 onClick = {
                                     loginViewModel.logout()
@@ -166,7 +173,6 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel = vi
 
                                 text = {
                                     Text(
-//                                        text = "afmelden",
                                         text = stringResource(id = R.string.afmelden),
                                         color = Color.Black // Stel de kleur van de tekst hier in
                                     )
@@ -447,7 +453,7 @@ fun ContactContent() {
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
     val properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
     val hoofdLocatie = LatLng(51.58466, 4.797556)
-    val tweedeLocatie = LatLng(51.58760524458254, 4.792655352693766)
+    val tweedeLocatie = LatLng(51.585870515086256, 4.792355393946187)
     var currentZoomLevel by remember { mutableStateOf(18f)
     }
 
@@ -531,7 +537,7 @@ fun ContactContent() {
                 Marker(
                     state = MarkerState(position = tweedeLocatie),
                     title = "Tweede locatie",
-                    snippet = "4815 CE Breda"
+                    snippet = "4818 AJ Breda"
                 )
             }
         } else {
@@ -584,7 +590,7 @@ fun ContactInfo(email: String, phone: String, openingHours: List<String>) {
             modifier = Modifier.padding(8.dp)
         )
         Text(
-            text = "Telefoon: $phone",
+            text = stringResource(id = R.string.Telefoon),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(8.dp)
         )

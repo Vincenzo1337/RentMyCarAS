@@ -12,11 +12,14 @@
     <string name="contact_opnemen">Contact us</string>
     <string name="bereikbaar">We are available at these locations:</string>
     <string name="contact_gegegevens">Contact Info</string>
-    <string name="Telefoon">Phone:</string>
+    <string name="Telefoon">Phone: +31 76 123 4567</string>
     <string name="Openingstijden">Opening hour:</string>
     <string name="gesloten">Closed</string>
     <string name="gebruikersnaam">User</string>
     <string name="wachtwoord">Password</string>
     <string name="reserveren">Reservation</string>
     <string name="reserveringen">My reservations</string>
+    <string name="beschikbaar">available</string>
+    <string name="reserveren_auto">Reserve</string>
+    <string name="brandstof">Fuel:</string>
 </resources>

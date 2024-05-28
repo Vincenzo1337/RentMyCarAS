@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.rentmycaras.R
 import com.example.rentmycaras.ui.theme.RentMyCarASTheme
 import com.example.rentmycaras.viewmodels.RegisterViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -87,7 +89,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
             onValueChange = {
                 name = it.text
             },
-            label = { Text("Gebruikersnaam") },
+            label = { Text(stringResource(id = R.string.gebruikersnaam)) },
             leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -99,7 +101,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
             onValueChange = {
                 phone = it.text
             },
-            label = { Text("Telefoonnummer") },
+            label = { Text(stringResource(id = R.string.Telefoon)) },
             leadingIcon = { Icon(imageVector = Icons.Default.Phone, contentDescription = null) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,7 +125,7 @@ fun RegisterScreen(navController: NavController, registerViewModel: RegisterView
             onValueChange = {
                 passwordValue = it.text
             },
-            label = { Text("Wachtwoord") },
+            label = { Text(stringResource(id = R.string.wachtwoord)) },
             leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = null) },
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

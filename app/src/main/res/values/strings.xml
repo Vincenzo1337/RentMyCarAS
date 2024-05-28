@@ -14,11 +14,15 @@
     <string name="contact_opnemen">Neem contact met ons op</string>
     <string name="bereikbaar">Wij zijn bereikbaar op deze locaties:</string>
     <string name="contact_gegegevens">Contactgegevens</string>
-    <string name="Telefoon">Telefoon:</string>
+    <string name="Telefoon">Telefoon: +31 76 123 4567</string>
     <string name="Openingstijden">Openingstijden:</string>
     <string name="gesloten">Gesloten:</string>
     <string name="reserveren">Reserveren:</string>
+    <string name="reserveren_auto">Reserveren</string>
     <string name="reserveringen">Mijn reserveringen:</string>
+    <string name="beschikbaar">Beschikbaar</string>
+    <string name="brandstof">Brandstof:</string>
+
 
 
     <!-- Voeg hier meer vertalingen toe -->
