@@ -538,7 +538,7 @@ fun ContactContent() {
                         Marker(
                             state = MarkerState(position = car.location.toLatLng()),
                             title = "${car.brand} ${car.type}",
-                            snippet = car.description
+                            snippet = "Eigenaar: ${car.owner?.name}"
                         )
                     }
                 }
