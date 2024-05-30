@@ -10,7 +10,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,8 +27,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Lock
@@ -61,7 +58,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -81,10 +77,8 @@ import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -452,7 +446,7 @@ fun HomeContent(navController: NavController, loginViewModel: LoginViewModel = v
 fun ContactContent() {
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
     val properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
-    val hoofdLocatie = LatLng(51.58466, 4.797556)
+    val hoofdLocatie = LatLng(51.5876, 4.7750)
     val tweedeLocatie = LatLng(51.585870515086256, 4.792355393946187)
     var currentZoomLevel by remember { mutableStateOf(18f)
     }
@@ -522,6 +516,23 @@ fun ContactContent() {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
+
+        val carApiService: CarApiService = CarApi.carApiService
+
+        val cars = mutableStateOf<List<Car>>(listOf())
+        val jitteredLocations = mutableStateOf<List<LatLng>>(listOf())
+
+        val coroutineScope = rememberCoroutineScope()
+        coroutineScope.launch {
+            cars.value = carApiService.getAllCars()
+            jitteredLocations.value = cars.value.mapNotNull { car ->
+                car.location?.let { location ->
+                    val jitter = Random.nextDouble(-0.01, 0.01)
+                    LatLng(location.latitude + jitter, location.longitude + jitter)
+                }
+            }
+        }
+
         if (permissionsState.allPermissionsGranted) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
@@ -529,18 +540,27 @@ fun ContactContent() {
                 properties = properties,
                 uiSettings = uiSettings
             ) {
-                Marker(
-                    state = MarkerState(position = hoofdLocatie),
-                    title = "Hoofd locatie",
-                    snippet = "Hogeschoollaan 1, Breda"
-                )
-                Marker(
-                    state = MarkerState(position = tweedeLocatie),
-                    title = "Tweede locatie",
-                    snippet = "4818 AJ Breda"
-                )
+                cars.value.forEach { car ->
+                    if (car.location != null) {
+                        val position = if (car.isNew) {
+                            val jitter = Random.nextDouble(-0.01, 0.01)
+                            LatLng(car.location.latitude + jitter, car.location.longitude + jitter)
+                        } else {
+                            LatLng(car.location.latitude, car.location.longitude)
+                        }
+
+                        Marker(
+                            state = MarkerState(position = position),
+                            title = "${car.brand} ${car.type}",
+                            snippet = "Eigenaar: ${car.owner?.name}"
+                        )
+                    }
+                }
             }
-        } else {
+        }
+
+
+        else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()

@@ -101,6 +101,7 @@ dependencies {
 
     implementation("com.google.maps.android:android-maps-utils:3.4.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+
     testImplementation ("org.mockito:mockito-inline:3.12.4")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0")
     testImplementation ("org.mockito:mockito-core:3.12.4")
