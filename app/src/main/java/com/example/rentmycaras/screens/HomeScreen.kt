@@ -10,7 +10,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -28,8 +27,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Lock
@@ -61,7 +58,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
@@ -77,14 +73,13 @@ import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.api.CarApiService
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.models.CarCategory
+import com.example.rentmycaras.models.toLatLng
 import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapType
@@ -93,7 +88,6 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -522,6 +516,16 @@ fun ContactContent() {
         )
         Spacer(modifier = Modifier.height(8.dp))
 
+
+        val carApiService: CarApiService = CarApi.carApiService
+
+        val cars = mutableStateOf<List<Car>>(listOf())
+
+        val coroutineScope = rememberCoroutineScope()
+        coroutineScope.launch {
+            cars.value = carApiService.getAllCars()
+        }
+
         if (permissionsState.allPermissionsGranted) {
             GoogleMap(
                 modifier = Modifier.fillMaxSize(),
@@ -529,16 +533,15 @@ fun ContactContent() {
                 properties = properties,
                 uiSettings = uiSettings
             ) {
-                Marker(
-                    state = MarkerState(position = hoofdLocatie),
-                    title = "Hoofd locatie",
-                    snippet = "Hogeschoollaan 1, Breda"
-                )
-                Marker(
-                    state = MarkerState(position = tweedeLocatie),
-                    title = "Tweede locatie",
-                    snippet = "4818 AJ Breda"
-                )
+                cars.value.forEach { car ->
+                    if (car.location != null) {
+                        Marker(
+                            state = MarkerState(position = car.location.toLatLng()),
+                            title = "${car.brand} ${car.type}",
+                            snippet = car.description
+                        )
+                    }
+                }
             }
         } else {
             Column(
