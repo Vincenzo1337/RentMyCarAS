@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.models.CarCategory
+import com.example.rentmycaras.models.Location
 import com.example.rentmycaras.models.TimeBlock
 import kotlinx.coroutines.launch
 
@@ -16,8 +17,8 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel) : ViewModel
     private val _car: MutableLiveData<Car> = MutableLiveData()
     val car: MutableLiveData<Car> = _car
 
-    private val _reservationSuccess: MutableLiveData<Boolean> = MutableLiveData()
-    val reservationSuccess: MutableLiveData<Boolean> = _reservationSuccess
+    private val _reservationSuccess: MutableLiveData<Boolean?> = MutableLiveData()
+    val reservationSuccess: LiveData<Boolean?> = _reservationSuccess
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -25,8 +26,9 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel) : ViewModel
     private val _carAddedSuccess = MutableLiveData<Boolean>()
     val carAddedSuccess: LiveData<Boolean> = _carAddedSuccess
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
+    private val _errorMessage: MutableLiveData<String?> = MutableLiveData()
+    val errorMessage: LiveData<String?> = _errorMessage
+
 
     fun getCar(carId: String) {
         viewModelScope.launch {
@@ -51,6 +53,8 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel) : ViewModel
     fun addCar(brand: String, type: String, description: String = "", category: CarCategory = CarCategory.ICE, availability: Boolean = true, timeBlock: List<TimeBlock> = emptyList()) {
         val ownerId = loginViewModel.loggedInUserId.value ?: throw IllegalStateException("User is not logged in")
 
+        val defaultLocation = Location(51.5883, 4.7750)
+
         val newCar = Car(
             brand = brand,
             type = type,
@@ -58,7 +62,9 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel) : ViewModel
             category = category,
             availability = availability,
             timeBlock = timeBlock,
-            ownerId = ownerId // Gebruik ownerId direct
+            ownerId = ownerId,
+            location = defaultLocation,
+            isNew = true
         )
 
         viewModelScope.launch {
@@ -68,7 +74,6 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel) : ViewModel
                 val response = CarApi.carApiService.cars(newCar)
                 if (response.isSuccessful) {
                     _carAddedSuccess.value = true
-                    // Update de UI om aan te geven dat de auto succesvol is toegevoegd
                 } else {
                     _errorMessage.value = "Auto toevoegen mislukt"
                 }
@@ -79,8 +84,6 @@ class CarDetailViewModel(private val loginViewModel: LoginViewModel) : ViewModel
             }
         }
     }
-
-
 
 
     class CarDetailViewModelFactory(private val loginViewModel: LoginViewModel) : ViewModelProvider.Factory {

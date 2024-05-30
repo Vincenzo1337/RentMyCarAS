@@ -14,8 +14,10 @@ data class Car(
     val description: String,
     val ownerId: Int,
     val owner: User? = null,
-    val location: Location? = null
+    val location: Location? = null,
+    val isNew: Boolean = false
 )
+
 @Serializable
 data class Location(val latitude: Double, val longitude: Double)
 

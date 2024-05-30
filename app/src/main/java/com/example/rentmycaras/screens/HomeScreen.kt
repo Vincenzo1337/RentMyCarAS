@@ -73,7 +73,6 @@ import com.example.rentmycaras.api.CarApi
 import com.example.rentmycaras.api.CarApiService
 import com.example.rentmycaras.models.Car
 import com.example.rentmycaras.models.CarCategory
-import com.example.rentmycaras.models.toLatLng
 import com.example.rentmycaras.viewmodels.CarDetailViewModel
 import com.example.rentmycaras.viewmodels.LoginViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -88,6 +87,7 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -446,7 +446,7 @@ fun HomeContent(navController: NavController, loginViewModel: LoginViewModel = v
 fun ContactContent() {
     var uiSettings by remember { mutableStateOf(MapUiSettings()) }
     val properties by remember { mutableStateOf(MapProperties(mapType = MapType.SATELLITE)) }
-    val hoofdLocatie = LatLng(51.58466, 4.797556)
+    val hoofdLocatie = LatLng(51.5876, 4.7750)
     val tweedeLocatie = LatLng(51.585870515086256, 4.792355393946187)
     var currentZoomLevel by remember { mutableStateOf(18f)
     }
@@ -520,10 +520,17 @@ fun ContactContent() {
         val carApiService: CarApiService = CarApi.carApiService
 
         val cars = mutableStateOf<List<Car>>(listOf())
+        val jitteredLocations = mutableStateOf<List<LatLng>>(listOf())
 
         val coroutineScope = rememberCoroutineScope()
         coroutineScope.launch {
             cars.value = carApiService.getAllCars()
+            jitteredLocations.value = cars.value.mapNotNull { car ->
+                car.location?.let { location ->
+                    val jitter = Random.nextDouble(-0.01, 0.01)
+                    LatLng(location.latitude + jitter, location.longitude + jitter)
+                }
+            }
         }
 
         if (permissionsState.allPermissionsGranted) {
@@ -535,15 +542,25 @@ fun ContactContent() {
             ) {
                 cars.value.forEach { car ->
                     if (car.location != null) {
+                        val position = if (car.isNew) {
+                            val jitter = Random.nextDouble(-0.01, 0.01)
+                            LatLng(car.location.latitude + jitter, car.location.longitude + jitter)
+                        } else {
+                            LatLng(car.location.latitude, car.location.longitude)
+                        }
+
                         Marker(
-                            state = MarkerState(position = car.location.toLatLng()),
+                            state = MarkerState(position = position),
                             title = "${car.brand} ${car.type}",
                             snippet = "Eigenaar: ${car.owner?.name}"
                         )
                     }
                 }
             }
-        } else {
+        }
+
+
+        else {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
