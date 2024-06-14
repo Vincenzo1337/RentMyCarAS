@@ -527,7 +527,7 @@ fun ContactContent() {
             cars.value = carApiService.getAllCars()
             jitteredLocations.value = cars.value.mapNotNull { car ->
                 car.location?.let { location ->
-                    val jitter = Random.nextDouble(-0.01, 0.01)
+                    val jitter = Random.nextDouble(-0.001, 0.001)
                     LatLng(location.latitude + jitter, location.longitude + jitter)
                 }
             }
